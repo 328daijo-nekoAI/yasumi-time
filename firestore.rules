@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function member(f) {
+      return signedIn() && exists(/databases/$(db)/documents/families/$(f)/members/$(request.auth.uid));
+    }
+    function myRole(f) {
+      return get(/databases/$(db)/documents/families/$(f)/members/$(request.auth.uid)).data.role;
+    }
+    function isAdmin(f) { return member(f) && myRole(f) in ['owner', 'parent']; }
+    function isOwner(f) { return member(f) && myRole(f) == 'owner'; }
+
+    // 「家族に所属していない」状態か（未登録、または所属先の家族から外れている／家族が消えている）
+    function userFree(u) {
+      return !exists(/databases/$(db)/documents/users/$(u))
+        || !exists(/databases/$(db)/documents/families/$(get(/databases/$(db)/documents/users/$(u)).data.fid)/members/$(u));
+    }
+    // 参加・作成してよいか：未所属、またはすでにその家族に所属している
+    function canJoin(u, f) {
+      return userFree(u)
+        || get(/databases/$(db)/documents/users/$(u)).data.fid == f;
+    }
+
+    // どの家族に入っているか（自分の分だけ。所属中は別の家族へ変更・削除できない）
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow update: if signedIn() && request.auth.uid == uid
+        && (request.resource.data.fid == resource.data.fid || userFree(uid));
+      allow delete: if signedIn() && request.auth.uid == uid && userFree(uid);
+    }
+
+    // 作者のマスターパスワード（ハッシュ）。読めるのはログイン済みの人、書けるのは作者のGoogleアカウントだけ
+    match /config/{d} {
+      allow read: if signedIn();
+      allow write: if signedIn() && request.auth.token.email == '328daijo@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    match /families/{f} {
+      // 家族コードの存在確認のためログイン済みなら get 可（一覧は不可）
+      allow get: if signedIn();
+      // すでに家族に所属している人は、新しい家族をつくれない
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && userFree(request.auth.uid);
+      allow update: if isAdmin(f) && request.resource.data.ownerUid == resource.data.ownerUid;
+
+      match /members/{u} {
+        allow read: if signedIn() && (request.auth.uid == u || member(f));
+        // 参加するときは「子ども」としてのみ。所有者は家族を作った本人のみ
+        allow create: if signedIn() && request.auth.uid == u && canJoin(u, f) && (
+          request.resource.data.role == 'child' ||
+          (request.resource.data.role == 'owner' &&
+            get(/databases/$(db)/documents/families/$(f)).data.ownerUid == request.auth.uid));
+        // 役割の変更は所有者だけ。それ以外は役割を変えない更新のみ
+        allow update: if isOwner(f)
+          || (member(f) && request.resource.data.role == resource.data.role
+              && (isAdmin(f) || request.auth.uid == u));
+        allow delete: if isOwner(f);
+      }
+
+      match /rewards/{r} {
+        allow read: if member(f);
+        allow write: if isAdmin(f);
+      }
+
+      match /requests/{r} {
+        allow read: if member(f);
+        allow create: if member(f);
+        allow update: if isAdmin(f);
+      }
+
+      match /log/{l} {
+        allow read: if member(f);
+        allow create: if member(f);
+      }
+
+      // 合言葉（PIN）のハッシュ
+      match /private/{d} {
+        allow read: if member(f);
+        allow write: if isOwner(f);
+      }
+    }
+  }
+}

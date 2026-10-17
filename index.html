@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>やすみタイム</title>
+<meta name="theme-color" content="#4f7cff">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--p:#4f7cff;--pd:#3a63d8;--bg:#f2f6fd;--card:#fff;--tx:#22304a;--mut:#6b7a96;--line:#e3e9f4;--soft:#eaf0ff;--o:#ff8a3d;--ok:#2fb36b;--bad:#e5484d;--g:#d5dcec;--ova:#2f4fb8;--ovb:#4f7cff;--ovc:#76b6ff}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Noto Sans JP",sans-serif;-webkit-text-size-adjust:100%}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+header{display:flex;align-items:center;gap:8px;padding:12px 16px;max-width:760px;margin:0 auto}
+header .logo{font-weight:800;font-size:20px;flex:1;display:flex;align-items:center;gap:8px}
+header .who{font-size:12px;color:var(--mut);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+main{max-width:760px;margin:0 auto;padding:0 16px 48px}
+.card{background:var(--card);border-radius:20px;padding:18px;margin:0 0 14px;box-shadow:0 2px 10px rgba(40,60,110,.07)}
+.card h2{margin:0 0 12px;font-size:17px}
+.card h3{margin:14px 0 8px;font-size:14px;color:var(--mut)}
+.muted{color:var(--mut);font-size:13px;line-height:1.6}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.btn{appearance:none;border:0;border-radius:14px;background:var(--p);color:#fff;font-size:15px;font-weight:700;padding:12px 18px;cursor:pointer;font-family:inherit}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:var(--g);color:#98a3bb;cursor:not-allowed}
+.btn.big{width:100%;padding:16px;font-size:18px;border-radius:18px}
+.btn.warn{background:var(--o)}.btn.ok{background:var(--ok)}.btn.bad{background:var(--bad)}
+.btn.ghost{background:var(--soft);color:var(--pd)}
+.btn.ghost:disabled{background:var(--soft);color:var(--mut);opacity:.6}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:10px}
+.btn.link{background:none;color:var(--mut);font-weight:600;padding:6px 8px}
+input,select,textarea{font:inherit;font-size:15px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--card);color:var(--tx);width:100%}
+textarea{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}
+.chk{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;margin:14px 0 0}
+.chk input{width:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chip{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--soft);color:var(--pd)}
+.chip.owner{background:#fff1d6;color:#a0620a}.chip.parent{background:#e3f6ec;color:#1c7a49}
+.chip.pending{background:#fff1d6;color:#a0620a}.chip.approved{background:#e3f6ec;color:#1c7a49}.chip.rejected{background:#fde8e8;color:#b32a2e}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:0 0 14px;padding-bottom:2px}
+.tabs button{appearance:none;border:0;background:var(--soft);color:var(--pd);font:inherit;font-weight:700;font-size:14px;padding:9px 14px;border-radius:99px;white-space:nowrap;cursor:pointer}
+.tabs button.on{background:var(--p);color:#fff}
+.badge{background:var(--bad);color:#fff;border-radius:99px;font-size:11px;padding:1px 7px;margin-left:5px}
+.hero{text-align:center;padding:26px 8px 10px}
+.hero h1{margin:0 0 6px;font-size:28px}
+.modes{display:grid;gap:12px}
+.mode{display:flex;gap:14px;align-items:center;text-align:left;width:100%;border:0;background:var(--card);border-radius:20px;padding:20px;box-shadow:0 2px 10px rgba(40,60,110,.07);cursor:pointer;font:inherit;color:inherit}
+.mode .ic{font-size:34px}.mode b{font-size:17px;display:block}.mode span{font-size:13px;color:var(--mut)}
+.pts{font-size:34px;font-weight:800;color:#e0a100}
+.ringwrap{position:relative;width:240px;height:240px;margin:6px auto 14px}
+.ringwrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ringwrap .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 30px}
+.ringwrap .t{font-size:46px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:1px}
+.ringwrap .l{font-size:13px;color:var(--mut);font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stats div{background:var(--soft);border-radius:14px;padding:10px 4px}.stats b{font-size:20px;display:block}.stats span{font-size:11px;color:var(--mut)}
+.item{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.av{width:38px;height:38px;border-radius:50%;background:var(--soft);color:var(--pd);display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+.result{border-radius:14px;padding:12px;margin-bottom:12px;font-weight:700;font-size:14px;line-height:1.6}
+.result.ok{background:#e3f6ec;color:#1c7a49}.result.ng{background:#fff1d6;color:#a0620a}
+.bar{height:12px;border-radius:99px;background:var(--soft);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--p);transition:width .4s}
+.bar.gold i{background:#f0b400}
+.lvrow{display:flex;align-items:center;gap:10px;margin-top:10px}
+.lvrow .lv{font-weight:800;color:var(--pd);white-space:nowrap}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.bd{text-align:center;border-radius:14px;background:var(--soft);padding:10px 4px}
+.bd .i{font-size:28px}.bd b{display:block;font-size:11px;margin-top:2px}.bd span{font-size:10px;color:var(--mut)}
+.bd.off{opacity:.35;filter:grayscale(1)}
+.tchips{display:flex;gap:8px;flex-wrap:wrap}
+.tchip{appearance:none;border:2px solid transparent;background:var(--soft);color:var(--pd);font:inherit;font-weight:700;font-size:13px;padding:8px 12px;border-radius:12px;cursor:pointer}
+.tchip.on{border-color:var(--p)}.tchip:disabled{opacity:.5;cursor:not-allowed}
+.mis{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.mis:first-of-type{border-top:0}
+.rrow{display:grid;grid-template-columns:42px 1fr 46px 36px 40px;gap:6px;align-items:center;font-size:12px;padding:5px 0}
+.rbar{height:10px;border-radius:99px;background:var(--soft);overflow:hidden}.rbar i{display:block;height:100%;background:var(--p);border-radius:99px}
+.rv{text-align:right;color:var(--mut);font-variant-numeric:tabular-nums}
+#banner{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--o);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:none;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+#banner.on{display:flex}
+#banner .tx{flex:1;font-weight:700;font-size:14px;line-height:1.4}
+#banner button{background:#fff;color:#c4560c;border:0;border-radius:12px;font-weight:800;padding:10px 14px;font-size:14px;cursor:pointer;font-family:inherit}
+#ov{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;align-items:center;text-align:center;padding:30px 20px;color:#fff;background:linear-gradient(160deg,var(--ova),var(--ovb) 60%,var(--ovc));overflow-y:auto}
+#ov.on{display:flex}#ov.forced{background:linear-gradient(160deg,#c4560c,#ff8a3d 60%,#ffb36b)}
+#ov .in{margin:auto 0;width:100%;max-width:440px}
+#ov h1{font-size:30px;margin:0 0 6px}#ov .big{font-size:72px;font-weight:800;font-variant-numeric:tabular-nums;margin:6px 0 14px}
+#ov p{line-height:1.7;margin:0 0 14px}
+#ov.lock{background:linear-gradient(160deg,#5a1f00,#c4560c)}
+#ov.lock.black{background:#000;color:#aab3c8}#ov.lock.black .big{color:#e3e8f5}#ov.lock.black h1{color:#fff}
+#ov .lkic{font-size:56px;margin-bottom:6px}
+#ov .btn{background:#fff;color:var(--pd)}#ov.forced .btn{color:#c4560c}
+#ov .btn.link{background:none;color:rgba(255,255,255,.8);margin-top:20px}
+.tipcard{display:flex;gap:12px;align-items:center;text-align:left;background:rgba(255,255,255,.18);border-radius:18px;padding:14px;margin:0 0 14px;min-height:76px;line-height:1.6;font-size:14px}
+.tipcard .ti{font-size:34px}
+.quizbox{background:rgba(255,255,255,.95);color:#22304a;border-radius:18px;padding:14px;text-align:left;margin:0 0 6px}
+.quizbox p{margin:8px 0;font-size:15px}
+.qopt{display:block;width:100%;text-align:left;margin:6px 0 0;padding:11px 14px;border:0;border-radius:12px;background:#eaf0ff;color:#3a63d8;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#22304a;color:#fff;padding:11px 18px;border-radius:99px;font-size:14px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+.modal{position:fixed;inset:0;background:rgba(20,30,50,.5);z-index:150;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal .box{background:var(--card);border-radius:20px;padding:20px;width:100%;max-width:340px;color:var(--tx)}
+.modal h3{margin:0 0 6px;font-size:17px}
+.err{color:var(--bad);font-size:13px;margin-top:8px;white-space:pre-wrap}
+details{margin-top:10px}summary{cursor:pointer;color:var(--mut);font-size:13px;font-weight:700}
+code{background:var(--soft);padding:1px 6px;border-radius:6px;font-size:12px}
+</style>
+</head>
+<body>
+<div id="banner"></div>
+<div id="app"></div>
+<div id="ov"></div>
+<div id="toast"></div>
+
+<script src="native-config.js"></script>
+<script>
+/* ============================================================
+   やすみタイム — 休憩を守るとポイントがたまる家族向けタイマー
+   Firebase の設定は、下に貼るか、ログイン画面から貼りつけてください。
+   ============================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBGYgaUei3hV6ky9uni64gTuw9MjK9qZ54",
+  authDomain: "zikannkannriapuri.firebaseapp.com",
+  projectId: "zikannkannriapuri",
+  storageBucket: "zikannkannriapuri.firebasestorage.app",
+  messagingSenderId: "990893378979",
+  appId: "1:990893378979:web:36e8c4c6a71f5cda811e16"
+};
+
+const DEFAULTS = {
+  workMin:30, breakMin:5, graceMin:3, points:10,
+  dailyLimitMin:0, quietOn:false, quietStart:'21:00', quietEnd:'07:00',
+  streak3:10, streak7:30, tipsOn:true, quizOn:true, quizPts:2, quizMax:5,
+  sound:true, vibrate:true, keepAwake:true,
+  autoLock:true, blackout:true, lockText:'設定した時間に終了しました', displayOff:false
+};
+/* 作者（このアプリを作った人）のGoogleアカウント。マスターパスワードを設定できるのはこの人だけ（Firestoreルール側でも制限） */
+const CREATOR_EMAILS = ['328daijo@gmail.com'];
+const DEFAULT_MISSIONS = [
+  {id:'m1', kind:'breaks', target:3, bonus:15},
+  {id:'m2', kind:'quiz', target:3, bonus:10}
+];
+const SEED = [
+  {name:'おやつ', cost:30, perDay:0, perWeek:0, expires:''},
+  {name:'ゲーム30分延長', cost:50, perDay:1, perWeek:0, expires:''},
+  {name:'おこづかい100円', cost:100, perDay:0, perWeek:1, expires:''}
+];
+const ROLE = {owner:'所有者', parent:'保護者', child:'子ども'};
+
+/* 休憩中に出す内容（目の体操・豆知識・クイズ） */
+const CONTENT = /*CONTENT_JSON*/ {"tips":[{"icon":"👀","title":"遠くを見よう","text":"まどの外の遠くを20秒ほど見よう。目の筋肉がほぐれるよ。"},{"icon":"😉","title":"ゆっくりまばたき","text":"目をぎゅっと閉じて、ぱっと開こう。これを5回くり返そう。"},{"icon":"🙆","title":"立ち上がろう","text":"いすから立って、ぐーんと上にのびをしよう。"},{"icon":"💧","title":"お水を飲もう","text":"コップ1ぱいのお水をゆっくり飲もう。"},{"icon":"🧘","title":"深呼吸","text":"鼻から吸って、口からゆっくりはこう。3回やってみよう。"},{"icon":"💪","title":"肩をまわそう","text":"肩を前に5回、後ろに5回まわそう。かたの力をぬいてね。"},{"icon":"🖐️","title":"手首ストレッチ","text":"手首をゆっくりまわして、指を大きくひらいたり閉じたりしよう。"},{"icon":"🐢","title":"首をのばそう","text":"首をゆっくり左右にたおして、のびを感じよう。むりはしないでね。"},{"icon":"🪑","title":"姿勢を見直そう","text":"背中をのばして、足のうらを床につけよう。"},{"icon":"🌳","title":"緑を見よう","text":"外の木や空など、遠くの景色を見て目を休ませよう。"},{"icon":"🔄","title":"目をぐるぐる","text":"目をゆっくり右まわり、左まわりに動かそう。顔は動かさないでね。"},{"icon":"🦵","title":"足をうごかそう","text":"その場で足ぶみを20回しよう。血のめぐりがよくなるよ。"},{"icon":"🤲","title":"手であたためる","text":"手をこすってあたため、閉じた目にそっと当てよう。強くおさないでね。"},{"icon":"🚶","title":"少し歩こう","text":"へやの中を一周歩いてみよう。体も頭もスッキリするよ。"}],"facts":[{"icon":"👁️","text":"人は1日に約1万5千回もまばたきをするといわれているよ。"},{"icon":"💡","text":"光は1秒間に地球を約7周半もできるほど速いよ。"},{"icon":"🌙","text":"月は自分で光らず、太陽の光を反射して光って見えるよ。"},{"icon":"🐙","text":"タコの心臓は3つあるよ。"},{"icon":"😴","text":"ねている間に、体は成長したり疲れを回復したりしているよ。"},{"icon":"🦴","text":"赤ちゃんの骨は約300本、大人になると約206本になるよ。"},{"icon":"🐘","text":"ゾウは陸の動物で一番大きいよ。"},{"icon":"☀️","text":"太陽の光が地球に届くまで、約8分かかるよ。"},{"icon":"🌈","text":"虹は、太陽の光が水てきで曲がって色に分かれて見えるものだよ。"},{"icon":"🦒","text":"キリンの首の骨の数は、人と同じ7本だよ。"},{"icon":"🧠","text":"脳は体重の約2％だけど、たくさんのエネルギーを使うよ。"},{"icon":"🪐","text":"木星は太陽系で一番大きな惑星だよ。"},{"icon":"🐝","text":"ミツバチは花のみつを集めて、はちみつをつくるよ。"},{"icon":"💧","text":"人の体の半分以上は水分でできているよ。"},{"icon":"🌍","text":"地球は1日約24時間かけて1回転しているよ。"},{"icon":"🦷","text":"歯の表面のエナメル質は、体の中で一番かたい部分だよ。"},{"icon":"🐧","text":"ペンギンは鳥だけど、空は飛ばず泳ぎが得意だよ。"},{"icon":"⭐","text":"夜空に光る星の多くは、太陽のように自分で光る星だよ。"},{"icon":"🦉","text":"フクロウは夜でもよく見える大きな目をもっているよ。"},{"icon":"❤️","text":"心臓は休まず動いて、血を全身に送り出しているよ。"}],"quiz":[{"q":"画面を見たあと、目を休ませるには？","c":["遠くを見る","もっと近づく","見続ける"],"a":0,"e":"遠くを見ると、ピントを合わせる目の筋肉が休まるよ。"},{"q":"画面を見ていると、まばたきは？","c":["増える","減る","変わらない"],"a":1,"e":"集中するとまばたきが減って、目がかわきやすくなるよ。"},{"q":"画面を見るときの部屋の明るさは？","c":["真っ暗にする","とてもまぶしくする","ちょうどよい明るさ"],"a":2,"e":"明るさの差が大きいと目が疲れやすいよ。"},{"q":"心臓の仕事は？","c":["血を全身に送る","食べ物をこなす","空気を取りこむ"],"a":0,"e":"心臓はポンプのように血を全身に送っているよ。"},{"q":"人の体で一番大きい臓器は？","c":["胃","皮ふ","肝臓"],"a":1,"e":"皮ふは体をおおう、体で一番大きな臓器だよ。"},{"q":"大人の骨は約何本？","c":["約50本","約100本","約200本"],"a":2,"e":"大人の骨は全部で約206本だよ。"},{"q":"水は何度でこおる？","c":["0度","10度","100度"],"a":0,"e":"水は0度でこおって氷になるよ。"},{"q":"太陽はどれ？","c":["惑星","恒星","衛星"],"a":1,"e":"太陽は自分で光る星で、恒星というよ。"},{"q":"光と音、速いのは？","c":["音","同じ速さ","光"],"a":2,"e":"光のほうがずっと速いよ。だから先に雷が光って見えるよ。"},{"q":"地球が太陽を一周するのは約何日？","c":["約365日","約30日","約100日"],"a":0,"e":"約365日で一周するから、これが1年だよ。"},{"q":"一番大きい動物は？","c":["ゾウ","シロナガスクジラ","キリン"],"a":1,"e":"シロナガスクジラは地球で一番大きい動物だよ。"},{"q":"コウモリは何の仲間？","c":["鳥","魚","ほ乳類"],"a":2,"e":"コウモリは子を産んで乳で育てるほ乳類だよ。"},{"q":"タコの足（うで）は何本？","c":["8本","6本","10本"],"a":0,"e":"タコの足は8本あるよ。"},{"q":"日本で一番高い山は？","c":["北岳","富士山","浅間山"],"a":1,"e":"富士山は標高3776mで日本一高いよ。"},{"q":"日本の首都は？","c":["大阪","京都","東京"],"a":2,"e":"日本の首都は東京だよ。"},{"q":"小学生に必要なねる時間の目安は？","c":["9〜11時間","3〜4時間","5〜6時間"],"a":0,"e":"成長のため、小学生は9〜11時間ほどがよいといわれるよ。"},{"q":"太陽系で一番大きい惑星は？","c":["地球","木星","火星"],"a":1,"e":"木星は太陽系で最大の惑星だよ。"},{"q":"月が光って見えるのはなぜ？","c":["月が燃えているから","地球の光だから","太陽の光を反射するから"],"a":2,"e":"月は太陽の光を反射して光って見えるよ。"},{"q":"虹は日本ではふつう何色といわれる？","c":["7色","3色","12色"],"a":0,"e":"日本では赤から紫までの7色とされることが多いよ。"},{"q":"植物が光を使って栄養をつくる働きは？","c":["呼吸","光合成","蒸発"],"a":1,"e":"光合成で、植物は光と水と二酸化炭素から栄養をつくるよ。"},{"q":"水が水蒸気になることを何という？","c":["こおる","とける","蒸発する"],"a":2,"e":"水が気体の水蒸気に変わることを蒸発というよ。"},{"q":"目の中で光を感じる部分は？","c":["網膜","まぶた","まゆ毛"],"a":0,"e":"網膜が光を感じて、その情報を脳に送るよ。"},{"q":"息を吸った空気が入る臓器は？","c":["胃","肺","腎臓"],"a":1,"e":"空気は肺に入って、酸素を体に取りこむよ。"},{"q":"ゲームやスマホの時間を決める理由は？","c":["お金がかかるから","電池が減るから","目や体を休ませるため"],"a":2,"e":"休けいを入れると、目や体、頭の疲れをやわらげられるよ。"},{"q":"画面と目のきょりはどうするとよい？","c":["30cm以上はなす","10cmにする","くっつける"],"a":0,"e":"近すぎると目が疲れやすいから、はなして見よう。"},{"q":"パンダの主な食べ物は？","c":["肉","竹","魚"],"a":1,"e":"パンダは主に竹やササを食べるよ。"},{"q":"日本の都道府県はいくつ？","c":["46","47","48"],"a":1,"e":"1都1道2府43県で、合わせて47だよ。"},{"q":"地球が1回転する時間は約何時間？","c":["約12時間","約48時間","約24時間"],"a":2,"e":"地球は約24時間で1回転して、1日になるよ。"},{"q":"骨を丈夫にするのに大切な栄養は？","c":["カルシウム","砂糖","ガム"],"a":0,"e":"カルシウムは骨や歯をつくる大切な栄養だよ。"},{"q":"水は水素と何でできている？","c":["炭素","窒素","酸素"],"a":2,"e":"水は水素と酸素でできていて、H2Oと書くよ。"}]} /*END_CONTENT*/;
+
+/* レベル・称号・テーマ・バッジ */
+const LVT = [0,30,80,150,250,400,600,850,1150,1500,2000,2600,3300,4100,5000];
+const TITLES = ['みならい','ひよっこ','がんばりや','休憩じょうず','休憩めいじん','たつじん','マスター','レジェンド','でんせつ','休憩の神'];
+const THEMES = {
+  normal:{n:'🔵 ノーマル',lv:1,v:{p:'#4f7cff',pd:'#3a63d8',bg:'#f2f6fd',card:'#ffffff',tx:'#22304a',mut:'#6b7a96',line:'#e3e9f4',soft:'#eaf0ff',ova:'#2f4fb8',ovb:'#4f7cff',ovc:'#76b6ff'}},
+  sea:{n:'🌊 うみ',lv:2,v:{p:'#0aa5b5',pd:'#0a7f8c',bg:'#eafafc',card:'#ffffff',tx:'#12383d',mut:'#52808a',line:'#cdeaee',soft:'#d9f4f7',ova:'#066a75',ovb:'#0aa5b5',ovc:'#6fd8e0'}},
+  forest:{n:'🌲 もり',lv:4,v:{p:'#2fa05a',pd:'#217a43',bg:'#eef8f0',card:'#ffffff',tx:'#1c3a28',mut:'#5b7c68',line:'#d3e9da',soft:'#dff3e5',ova:'#1b6b3a',ovb:'#2fa05a',ovc:'#8bd6a0'}},
+  sakura:{n:'🌸 さくら',lv:6,v:{p:'#e86a9a',pd:'#c24e7c',bg:'#fff2f7',card:'#ffffff',tx:'#4a2335',mut:'#8c6475',line:'#f4d9e5',soft:'#fde4ee',ova:'#b03a68',ovb:'#e86a9a',ovc:'#f7b0cb'}},
+  space:{n:'🪐 うちゅう',lv:8,v:{p:'#8b7bff',pd:'#a99dff',bg:'#12142b',card:'#1d2040',tx:'#e9ebff',mut:'#9aa0cf',line:'#2d3160',soft:'#2a2e5c',ova:'#0c0e24',ovb:'#2b2f78',ovc:'#5b52d6'}},
+  fire:{n:'🔥 ほのお',lv:10,v:{p:'#ff6a2b',pd:'#d94f14',bg:'#fff3ec',card:'#ffffff',tx:'#45210f',mut:'#8c6a58',line:'#f6dccf',soft:'#ffe6d8',ova:'#a8350a',ovb:'#ff6a2b',ovc:'#ffb067'}}
+};
+const BADGES = [
+  {id:'b1',i:'🌱',n:'はじめの休憩',d:'はじめて休憩できた',ok:m=>(m.breaksOk||0)>=1},
+  {id:'b2',i:'☕',n:'休憩10回',d:'休憩を10回',ok:m=>(m.breaksOk||0)>=10},
+  {id:'b3',i:'🏅',n:'休憩50回',d:'休憩を50回',ok:m=>(m.breaksOk||0)>=50},
+  {id:'b4',i:'🏆',n:'休憩100回',d:'休憩を100回',ok:m=>(m.breaksOk||0)>=100},
+  {id:'b5',i:'🔥',n:'3日れんぞく',d:'3日つづけた',ok:m=>(m.bestStreak||0)>=3},
+  {id:'b6',i:'🌟',n:'7日れんぞく',d:'7日つづけた',ok:m=>(m.bestStreak||0)>=7},
+  {id:'b7',i:'👑',n:'30日れんぞく',d:'30日つづけた',ok:m=>(m.bestStreak||0)>=30},
+  {id:'b8',i:'⭐',n:'100pt',d:'合計100pt',ok:m=>(m.total||0)>=100},
+  {id:'b9',i:'💎',n:'500pt',d:'合計500pt',ok:m=>(m.total||0)>=500},
+  {id:'b10',i:'🚀',n:'レベル5',d:'Lv5になった',ok:m=>levelOf(m.total||0).lv>=5},
+  {id:'b11',i:'🌈',n:'レベル10',d:'Lv10になった',ok:m=>levelOf(m.total||0).lv>=10},
+  {id:'b12',i:'🧠',n:'クイズ10問',d:'クイズ10問せいかい',ok:m=>(m.quizOk||0)>=10},
+  {id:'b13',i:'🎯',n:'ミッション',d:'ミッションを達成',ok:m=>(m.missionsDone||0)>=1},
+  {id:'b14',i:'🎁',n:'はじめての交換',d:'ごほうびと交換',ok:m=>(m.redeems||0)>=1}
+];
+
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const genCode = () => { const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<6;i++) s+=a[Math.floor(Math.random()*a.length)]; return s; };
+const today0 = () => { const d=new Date(); d.setHours(0,0,0,0); return d.getTime(); };
+const dayStr = (t=Date.now()) => { const d=new Date(t); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+const weekStart = () => { const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-((d.getDay()+6)%7)); return d.getTime(); };
+const hhmm = t => { const d=new Date(t); return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); };
+const fmt = ms => { const s=Math.max(0,Math.ceil(ms/1000)); const m=Math.floor(s/60); return m+':'+String(s%60).padStart(2,'0'); };
+const num = (v, d) => { const n=parseFloat(v); return isFinite(n) && n>0 ? n : d; };
+const int0 = (v, d=0) => { const n=Math.round(parseFloat(v)); return isFinite(n) && n>=0 ? n : d; };
+const fmtMin = ms => { const m=Math.round(ms/60000); return m>=60 ? Math.floor(m/60)+'時間'+(m%60)+'分' : m+'分'; };
+
+const hashPin = pin => hashWith('yasumi:'+(App.fid||''), pin);
+const hashMaster = pin => hashWith('yasumi:master', pin);
+async function hashWith(salt,pin){
+  try{ if(crypto?.subtle){
+    const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pin),'PBKDF2',false,['deriveBits']);
+    const b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:new TextEncoder().encode(salt),iterations:150000,hash:'SHA-256'},k,256);
+    return 'p'+[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+  } }catch{}
+  let h=5381; for(const c of salt+'|'+pin) h=((h<<5)+h+c.charCodeAt(0))|0; return 'f'+h;
+}
+
+const App = {adapter:null, user:null, fid:null, data:null, screen:'boot', tab:'members', kidSel:null, pinUntil:0, lockUntil:0, fails:0, unsub:null, dirty:false, error:'', seenReq:null};
+let T = {phase:'idle'};
+let Q = null, tipShown = -1;
+let ovSig = '', bnSig = '';
+let deferredInstall = null, wl = null, wlBusy = false, nbLocked = false;
+
+/* アプリ版（Windows/Mac=Electron, Android=Capacitor）との橋わたし。ブラウザでは何もしません */
+const NB = (()=>{
+  const el = window.YasumiNative, cap = window.Capacitor;
+  const isCap = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
+  let P = null; if(isCap){ try{ P = cap.registerPlugin('YasumiLock'); }catch{} }
+  return {
+    on: !!el || isCap, kind: el ? 'desktop' : isCap ? 'android' : '',
+    redirect: el ? el.redirectUri : 'yasumi://auth',
+    lock(on,o){ try{ if(el) el.setLock(on,o||{}); else if(P) P.setLock({on,...(o||{})}); }catch{} },
+    busy(b){ try{ if(el) el.setBusy(b); }catch{} },
+    open(url){ try{ if(el) el.openExternal(url); else if(P) P.openExternal({url}); }catch{} },
+    onToken(cb){ try{ if(el) el.onAuthToken(cb); else if(P) P.addListener('authToken',cb); }catch{} },
+    admin(){ return P ? P.requestAdmin() : Promise.reject(new Error('n/a')); }
+  };
+})();
+const isCreator = () => CREATOR_EMAILS.includes(String(App.user?.email||'').toLowerCase());
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredInstall=e; render(); });
+window.addEventListener('appinstalled',()=>{ deferredInstall=null; toast('インストールしました'); render(); });
+
+/* ---------------- Firebase adapter ---------------- */
+async function makeFirebase(cfg){
+  const B='https://www.gstatic.com/firebasejs/10.14.1/';
+  const [A,Au,F] = await Promise.all([import(B+'firebase-app.js'), import(B+'firebase-auth.js'), import(B+'firebase-firestore.js')]);
+  const app=A.initializeApp(cfg), auth=Au.getAuth(app), db=F.getFirestore(app);
+  const fd=(fid,...p)=>F.doc(db,'families',fid,...p);
+  const col=(fid,n)=>F.collection(db,'families',fid,n);
+  return {
+    kind:'firebase',
+    onAuth(cb){ Au.onAuthStateChanged(auth,u=>cb(u?{uid:u.uid,name:u.displayName||u.email||'ユーザー',photo:u.photoURL||'',email:u.email||''}:null)); },
+    async signInWithToken(t){ await Au.signInWithCredential(auth, Au.GoogleAuthProvider.credential(t.id||null, t.at||null)); },
+    async getMaster(){ const s=await F.getDoc(F.doc(db,'config','master')); return s.exists()?(s.data().hash||null):null; },
+    async setMaster(hash){ await F.setDoc(F.doc(db,'config','master'),{hash:hash||null,at:Date.now()}); },
+    async signIn(){
+      const p=new Au.GoogleAuthProvider(); p.setCustomParameters({prompt:'select_account'});
+      try{ await Au.signInWithPopup(auth,p); }
+      catch(e){
+        if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment'].includes(e.code)) await Au.signInWithRedirect(auth,p);
+        else if(!['auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(e.code)) throw e;
+      }
+    },
+    signOut(){ return Au.signOut(auth); },
+    async getMyFid(uid){ const s=await F.getDoc(F.doc(db,'users',uid)); return s.exists()?s.data().fid:null; },
+    async createFamily(u,name){
+      let code; for(let i=0;i<6;i++){ code=genCode(); if(!(await F.getDoc(fd(code))).exists()) break; }
+      await F.setDoc(fd(code),{name,code,ownerUid:u.uid,settings:DEFAULTS,missions:DEFAULT_MISSIONS,createdAt:Date.now()});
+      await F.setDoc(fd(code,'members',u.uid),{name:u.name,photo:u.photo,role:'owner',points:0,total:0,joinedAt:Date.now()});
+      await F.setDoc(F.doc(db,'users',u.uid),{fid:code});
+      for(const r of SEED) await F.addDoc(col(code,'rewards'),r);
+      return code;
+    },
+    async joinFamily(u,code){
+      code=code.trim().toUpperCase();
+      if(!(await F.getDoc(fd(code))).exists()) throw new Error('そのコードの家族が見つかりません');
+      if(!(await F.getDoc(fd(code,'members',u.uid))).exists())
+        await F.setDoc(fd(code,'members',u.uid),{name:u.name,photo:u.photo,role:'child',points:0,total:0,joinedAt:Date.now()});
+      await F.setDoc(F.doc(db,'users',u.uid),{fid:code});
+      return code;
+    },
+    async leave(uid){ await F.deleteDoc(F.doc(db,'users',uid)); },
+    watch(fid,cb){
+      const D={ready:false,family:null,members:{},rewards:[],requests:[],log:[],pinHash:null};
+      const got={f:false,m:false,p:false};
+      const push=()=>{ D.ready=got.f&&got.m&&got.p; cb(D); };
+      const err=e=>{ console.error(e); toast('読み込みエラー: '+(e.code||e.message)); };
+      const u=[
+        F.onSnapshot(fd(fid),s=>{got.f=true;D.family=s.exists()?s.data():null;push();},err),
+        F.onSnapshot(col(fid,'members'),s=>{got.m=true;D.members={};s.forEach(d=>D.members[d.id]=d.data());push();},err),
+        F.onSnapshot(col(fid,'rewards'),s=>{D.rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.cost-b.cost);push();},err),
+        F.onSnapshot(F.query(col(fid,'requests'),F.orderBy('at','desc'),F.limit(100)),s=>{D.requests=s.docs.map(d=>({id:d.id,...d.data()}));push();},err),
+        F.onSnapshot(F.query(col(fid,'log'),F.orderBy('at','desc'),F.limit(600)),s=>{D.log=s.docs.map(d=>({id:d.id,...d.data()}));push();},err),
+        F.onSnapshot(fd(fid,'private','pin'),s=>{got.p=true;D.pinHash=s.exists()?s.data().hash:null;push();},()=>{got.p=true;push();})
+      ];
+      return ()=>u.forEach(x=>x());
+    },
+    saveSettings:(fid,s)=>F.updateDoc(fd(fid),{settings:s}),
+    saveMissions:(fid,m)=>F.updateDoc(fd(fid),{missions:m}),
+    renameFamily:(fid,name)=>F.updateDoc(fd(fid),{name}),
+    setMember:(fid,uid,p)=>F.updateDoc(fd(fid,'members',uid),p),
+    removeMember:(fid,uid)=>F.deleteDoc(fd(fid,'members',uid)),
+    addPoints:(fid,uid,n)=>F.updateDoc(fd(fid,'members',uid),{points:F.increment(n)}),
+    bump:(fid,uid,inc,set)=>{ const u={...(set||{})}; for(const k in inc) u[k]=F.increment(inc[k]); return F.updateDoc(fd(fid,'members',uid),u); },
+    addReward:(fid,r)=>F.addDoc(col(fid,'rewards'),r),
+    delReward:(fid,id)=>F.deleteDoc(fd(fid,'rewards',id)),
+    addRequest:(fid,r)=>F.addDoc(col(fid,'requests'),r),
+    setRequest:(fid,id,p)=>F.updateDoc(fd(fid,'requests',id),p),
+    addLog:(fid,e)=>F.addDoc(col(fid,'log'),e),
+    setPin:(fid,hash)=>F.setDoc(fd(fid,'private','pin'),{hash:hash||null})
+  };
+}
+
+/* ---------------- Local (お試し) adapter ---------------- */
+function makeLocal(){
+  const KEY='yt_local_v2';
+  let S; try{ S=JSON.parse(localStorage.getItem(KEY)); }catch{}
+  S = S || {family:null,members:{},rewards:[],requests:[],log:[],pinHash:null,seq:1};
+  const cbs=new Set();
+  const view=()=>({ready:true,...JSON.parse(JSON.stringify(S))});
+  const save=()=>{ localStorage.setItem(KEY,JSON.stringify(S)); cbs.forEach(f=>f(view())); };
+  const id=()=>'l'+(S.seq++);
+  const U={uid:'demo',name:'おためしユーザー',photo:''};
+  return {
+    kind:'local',
+    onAuth(cb){ setTimeout(()=>cb(U),0); },
+    async signIn(){}, async signOut(){ localStorage.removeItem('yt_demo'); },
+    async signInWithToken(){}, async getMaster(){ return S.masterHash||null; }, async setMaster(h){ S.masterHash=h||null; save(); },
+    async getMyFid(){ return S.family?S.family.code:null; },
+    async createFamily(u,name){
+      S.family={name,code:'DEMO01',ownerUid:u.uid,settings:{...DEFAULTS},missions:JSON.parse(JSON.stringify(DEFAULT_MISSIONS))};
+      S.members[u.uid]={name:u.name,photo:'',role:'owner',points:0,total:0,joinedAt:Date.now()};
+      S.rewards=SEED.map(r=>({id:id(),...r})); save(); return 'DEMO01';
+    },
+    async joinFamily(){ throw new Error('お試しモードでは「家族に参加」は使えません'); },
+    async leave(){ },
+    watch(fid,cb){ cbs.add(cb); cb(view()); return ()=>cbs.delete(cb); },
+    async saveSettings(f,s){ S.family.settings=s; save(); },
+    async saveMissions(f,m){ S.family.missions=m; save(); },
+    async renameFamily(f,n){ S.family.name=n; save(); },
+    async setMember(f,u,p){ Object.assign(S.members[u],p); save(); },
+    async removeMember(f,u){ delete S.members[u]; save(); },
+    async addPoints(f,u,n){ S.members[u].points=(S.members[u].points||0)+n; save(); },
+    async bump(f,u,inc,set){ const m=S.members[u]; for(const k in inc) m[k]=(m[k]||0)+inc[k]; Object.assign(m,set||{}); save(); },
+    async addReward(f,r){ S.rewards.push({id:id(),...r}); S.rewards.sort((a,b)=>a.cost-b.cost); save(); },
+    async delReward(f,i){ S.rewards=S.rewards.filter(r=>r.id!==i); save(); },
+    async addRequest(f,r){ S.requests.unshift({id:id(),...r}); save(); },
+    async setRequest(f,i,p){ Object.assign(S.requests.find(r=>r.id===i),p); save(); },
+    async addLog(f,e){ S.log.unshift({id:id(),...e}); S.log=S.log.slice(0,600); save(); },
+    async setPin(f,h){ S.pinHash=h||null; save(); },
+    reset(){ localStorage.removeItem(KEY); }
+  };
+}
+
+/* ---------------- data accessors ---------------- */
+const D = () => App.data;
+const me = () => App.data?.members?.[App.user?.uid];
+const role = () => me()?.role || 'child';
+const isAdmin = () => ['owner','parent'].includes(role());
+const famSettings = () => ({...DEFAULTS, ...(D()?.family?.settings||{})});
+const settingsFor = uid => ({...famSettings(), ...(D()?.members?.[uid]?.settings||{})});
+const settings = () => settingsFor(App.user?.uid);
+const missions = () => D()?.family?.missions ?? DEFAULT_MISSIONS;
+const sv = k => (T.snap && T.snap[k]!==undefined) ? T.snap[k] : settings()[k];
+function levelOf(total){
+  let lv=1; for(let i=0;i<LVT.length;i++) if(total>=LVT[i]) lv=i+1;
+  const cur=LVT[lv-1], nxt=LVT[lv]??null;
+  return {lv, title:TITLES[Math.min(lv-1,TITLES.length-1)], cur, nxt, pct:nxt==null?100:Math.round((total-cur)/(nxt-cur)*100)};
+}
+const badgeIds = m => BADGES.filter(b=>b.ok(m||{})).map(b=>b.id);
+function curStreak(m){ const t=dayStr(), y=dayStr(Date.now()-864e5); return (m?.streakDay===t||m?.streakDay===y) ? (m.streak||0) : 0; }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast.h); toast.h=setTimeout(()=>t.classList.remove('on'),3200); }
+function ask({title,text='',type='text',value='',okText='OK',inputmode=''}){
+  return new Promise(res=>{
+    const m=document.createElement('div'); m.className='modal';
+    m.innerHTML=`<form class="box"><h3>${esc(title)}</h3><div class="muted">${esc(text)}</div><input id="mi" type="${type}" ${inputmode?`inputmode="${inputmode}"`:''} value="${esc(value)}" style="margin:12px 0 6px" autocomplete="off">${type==='password'?'<label class="chk" style="margin:0 0 12px"><input type="checkbox" id="mshow"> 文字を表示</label>':'<div style="height:6px"></div>'}<div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost sm" data-x="0">キャンセル</button><button class="btn sm">${esc(okText)}</button></div></form>`;
+    document.body.appendChild(m); const inp=$('#mi',m); inp.focus(); const sh=$('#mshow',m); if(sh) sh.addEventListener('change',()=>{ inp.type=sh.checked?'text':'password'; });
+    const done=v=>{m.remove();res(v);};
+    m.addEventListener('click',e=>{ if(e.target===m||e.target.dataset.x==='0') done(null); });
+    $('form',m).addEventListener('submit',e=>{e.preventDefault();done(inp.value);});
+  });
+}
+async function requirePin(){
+  if(!D()?.pinHash) return true;
+  if(App.pinUntil>Date.now()) return true;
+  if(App.lockUntil>Date.now()){ toast('まちがいが続いたので、'+Math.ceil((App.lockUntil-Date.now())/1000)+'秒まってね'); return false; }
+  const v=await ask({title:'合言葉',text:'保護者の合言葉を入れてください',type:'password'});
+  if(v==null||v==='') return false;
+  if(await hashPin(v)===D().pinHash){ App.pinUntil=Date.now()+5*60000; App.fails=0; return true; }
+  App.fails=(App.fails||0)+1;
+  if(App.fails>=5){ App.lockUntil=Date.now()+60000; App.fails=0; toast('5回まちがえました。1分まってね'); } else toast('合言葉がちがいます');
+  return false;
+}
+const guard = async fn => { try{ return await fn(); }catch(e){ console.error(e); toast(e.code==='permission-denied'?'権限がありません。Firestoreのルールを公開したか確認してください':'うまくいきませんでした: '+(e.code||e.message)); } };
+
+/* ---------------- themes ---------------- */
+let curTheme='';
+function applyTheme(id){
+  const t=THEMES[id]||THEMES.normal; if(curTheme===id) return; curTheme=id;
+  const r=document.documentElement.style; for(const k in t.v) r.setProperty('--'+k,t.v[k]);
+  const mt=document.querySelector('meta[name=theme-color]'); if(mt) mt.content=t.v.p;
+}
+function themeFor(m){ const id=m?.theme||'normal'; const t=THEMES[id]; return (t && t.lv<=levelOf(m.total||0).lv) ? id : 'normal'; }
+
+/* ---------------- usage limits ---------------- */
+function inQuiet(on,a,b){
+  if(!on) return false; const d=new Date(), now=d.getHours()*60+d.getMinutes();
+  const p=x=>{ const [h,m]=String(x||'0:0').split(':'); return (+h||0)*60+(+m||0); };
+  const s=p(a), e=p(b); if(s===e) return false;
+  return s<e ? (now>=s&&now<e) : (now>=s||now<e);
+}
+function runningMs(){
+  if(T.phase==='working'||T.phase==='due') return Date.now()-T.workStart;
+  if(T.phase==='forced') return Math.max(0,T.dueAt+T.snap.graceMin*60000-T.workStart);
+  return 0;
+}
+function usedMs(){ const m=me(); const base=(m?.usageDay===dayStr()?(m.usageMs||0):0); return base+runningMs(); }
+function limitState(){
+  const s=settings();
+  if(inQuiet(s.quietOn,s.quietStart,s.quietEnd)) return {blocked:true,msg:`いまは使えない時間です（${s.quietStart}〜${s.quietEnd}）`};
+  const lim=Number(s.dailyLimitMin)||0;
+  if(lim>0 && usedMs()>=lim*60000) return {blocked:true,msg:`今日の使用時間（${lim}分）をつかいきりました。また明日！`};
+  return {blocked:false};
+}
+function closeSegment(msArg){
+  const ms=Math.round(msArg!==undefined?msArg:runningMs()); if(ms<1000||!me()) return;
+  const m=me(), day=dayStr(), A=App.adapter, fid=App.fid, uid=App.user.uid;
+  const base=m.usageDay===day?(m.usageMs||0):0;
+  A.setMember(fid,uid,{usageDay:day,usageMs:base+ms}).catch(()=>{});
+  A.addLog(fid,{uid,name:m.name,type:'usage',ms,at:Date.now()}).catch(()=>{});
+}
+
+/* ---------------- points / missions / awards ---------------- */
+const claimKey = () => 'yt_cl_'+App.user.uid+'_'+dayStr();
+function claimedLocal(){ try{ return JSON.parse(localStorage.getItem(claimKey()))||[]; }catch{ return []; } }
+function missionLabel(x){ return x.kind==='quiz' ? `クイズに${x.target}問せいかい` : `休憩を${x.target}回できる`; }
+function missionCount(kind){
+  const uid=App.user.uid, t0=today0();
+  return D().log.filter(l=>l.uid===uid&&l.at>=t0&&l.type===(kind==='quiz'?'quiz_ok':'break_ok')).length;
+}
+function missionDone(x){ const uid=App.user.uid,t0=today0(); return D().log.some(l=>l.uid===uid&&l.at>=t0&&l.type==='mission'&&l.mid===x.id) || claimedLocal().includes(x.id); }
+function missionsToAward(add){
+  const cnt={breaks:missionCount('breaks')+(add.breaks||0), quiz:missionCount('quiz')+(add.quiz||0)};
+  const got=missions().filter(x=>cnt[x.kind]>=x.target && !missionDone(x));
+  if(got.length){ try{ localStorage.setItem(claimKey(),JSON.stringify([...claimedLocal(),...got.map(x=>x.id)])); }catch{} }
+  return got;
+}
+function streakUpdate(m){
+  const today=dayStr(), yest=dayStr(Date.now()-864e5), s=settings();
+  if(m.streakDay===today) return {changed:false,bonus:0};
+  const st=(m.streakDay===yest)?(m.streak||0)+1:1;
+  const bonus = st%7===0 ? (+s.streak7||0) : st%3===0 ? (+s.streak3||0) : 0;
+  return {changed:true,streak:st,streakDay:today,bonus};
+}
+async function commitAward(ents,inc,set){
+  const A=App.adapter, fid=App.fid, uid=App.user.uid, m=me(), name=m.name;
+  const m2={...m,...set}; for(const k in inc) m2[k]=(m2[k]||0)+inc[k];
+  await A.bump(fid,uid,inc,set);
+  for(const e of ents) await A.addLog(fid,{uid,name,at:Date.now(),...e});
+  const l1=levelOf(m.total||0), l2=levelOf(m2.total||0), b1=badgeIds(m), nb=badgeIds(m2).filter(x=>!b1.includes(x));
+  const msg=[]; if(l2.lv>l1.lv) msg.push(`🎉 レベルアップ！ Lv${l2.lv} ${l2.title}`);
+  if(nb.length) msg.push(`🏅 バッジ「${BADGES.find(b=>b.id===nb[0]).n}」をゲット！`);
+  if(msg.length){ toast(msg.join('  ')); beep(); }
+}
+
+/* ---------------- Timer logic ---------------- */
+const tkey = () => 'yt_timer_'+App.user.uid;
+function loadT(){ try{T=JSON.parse(localStorage.getItem(tkey()));}catch{T=null;} if(!T||!T.phase) T={phase:'idle'}; NB.busy(T.phase!=='idle'); }
+function saveT(){ localStorage.setItem(tkey(),JSON.stringify(T)); NB.busy(T.phase!=='idle'); pushSession(); }
+function untilOf(){
+  const s=T.snap||settings();
+  if(T.phase==='working') return T.workStart+s.workMin*60000;
+  if(T.phase==='due') return T.dueAt+s.graceMin*60000;
+  if(T.phase==='break') return T.breakEnd;
+  return 0;
+}
+function pushSession(){
+  if(!App.adapter||!App.fid||!me()) return;
+  App.adapter.setMember(App.fid,App.user.uid,{session:{phase:T.phase,until:untilOf(),at:Date.now()}}).catch(()=>{});
+}
+function startSession(){
+  const lim=limitState(); if(lim.blocked) return toast(lim.msg);
+  askNotify();
+  T={phase:'working',workStart:Date.now(),snap:{...settings()}};
+  saveT(); render(true);
+}
+function endSession(){ closeSegment(); T={phase:'idle'}; saveT(); render(true); }
+function takeBreak(){
+  const kind=T.phase==='due'?'ok':'forced';
+  const used=Math.round(runningMs());           // 先に使った時間を確定（記録の書きこみで画面が途中の状態にならないように）
+  const now=Date.now();
+  T={...T,phase:'break',breakKind:kind,breakStart:now,breakEnd:now+T.snap.breakMin*60000};
+  Q=null; tipShown=-1; closeSegment(used); saveT(); render(true);
+}
+async function finishBreak(){
+  const kind=T.breakKind, pts=Number(T.snap?.points)||0, A=App.adapter, fid=App.fid, uid=App.user.uid, m=me(), name=m?.name||'';
+  const parts=[]; let total=0;
+  if(kind==='ok'){
+    const ents=[{type:'break_ok',pts,text:''}], inc={breaksOk:1}, set={}; total=pts; parts.push(`休憩 +${pts}pt`);
+    const su=streakUpdate(m);
+    if(su.changed){ set.streak=su.streak; set.streakDay=su.streakDay; set.bestStreak=Math.max(m.bestStreak||0,su.streak);
+      if(su.bonus>0){ ents.push({type:'streak',pts:su.bonus,text:su.streak+'日れんぞく'}); total+=su.bonus; parts.push(`🔥${su.streak}日れんぞく +${su.bonus}pt`); } }
+    const ms=missionsToAward({breaks:1});
+    ms.forEach(x=>{ ents.push({type:'mission',pts:x.bonus,text:missionLabel(x),mid:x.id}); total+=x.bonus; parts.push(`🎯${missionLabel(x)} +${x.bonus}pt`); });
+    if(ms.length) inc.missionsDone=ms.length;
+    inc.points=total; inc.total=total;
+    T={phase:'idle',last:{kind:'ok',pts:total,parts}};
+    saveT(); notify(`休憩おわり！ +${total}pt`); beep(); render(true);
+    await guard(()=>commitAward(ents,inc,set));
+  } else {
+    T={phase:'idle',last:{kind:'forced',pts:0,parts}};
+    saveT(); notify('休憩おわり（ポイントなし）'); beep(); render(true);
+    await guard(()=>A.addLog(fid,{uid,name,type:'break_forced',pts:0,at:Date.now()}));
+  }
+}
+/* 休憩・ロック中の解除：保護者の合言葉、または作者のマスターパスワード */
+async function requireOverride(){
+  if(!D()?.pinHash && !App.masterHash){ toast('ここからは解除できません。時間がたつまで待ってね'); return false; }
+  if(App.pinUntil>Date.now()) return true;
+  if(App.lockUntil>Date.now()){ toast('まちがいが続いたので、'+Math.ceil((App.lockUntil-Date.now())/1000)+'秒まってね'); return false; }
+  const v=await ask({title:'解除の合言葉',text:'保護者の合言葉、または作者のマスターパスワードを入れてください',type:'password'});
+  if(v==null||v==='') return false;
+  const okG = !!D()?.pinHash && (await hashPin(v))===D().pinHash;
+  const okM = !okG && !!App.masterHash && (await hashMaster(v))===App.masterHash;
+  if(okG||okM){ App.fails=0; return true; }
+  App.fails=(App.fails||0)+1;
+  if(App.fails>=5){ App.lockUntil=Date.now()+60000; App.fails=0; toast('5回まちがえました。1分まってね'); } else toast('合言葉がちがいます');
+  return false;
+}
+/* 解除したあと、残りの休憩を何分にするか決める。0分なら「もう休憩が終わりです」 */
+async function overrideBreak(){
+  if(T.phase!=='break') return;
+  if(!(await requireOverride())) return;
+  const raw=await ask({title:'休憩をどうしますか？',text:'残りの休憩を何分にするか入れてください。0分にすると「もう休憩が終わりです」になり、すぐ使えます。（ポイントは入りません）',type:'number',value:'0',inputmode:'decimal',okText:'反映'});
+  if(raw==null) return;
+  let n=parseFloat(raw); if(!isFinite(n)||n<0) n=0;
+  const uid=App.user.uid, name=me()?.name||'';
+  if(n<=0){ T={phase:'idle',last:{kind:'shortened'}}; saveT(); render(true); }
+  else { T={...T,breakKind:'forced',breakEnd:Date.now()+n*60000}; saveT(); ovSig=''; render(true); toast('残り '+n+' 分にしました'); }
+  guard(()=>App.adapter.addLog(App.fid,{uid,name,type:'break_shortened',pts:0,text:n+'分',at:Date.now()}));
+}
+function forceStop(msg){
+  closeSegment(); T={phase:'idle',last:{kind:'limit',msg}}; saveT(); notify(msg); beep(); render(true);
+}
+function tick(){
+  if(!App.data?.ready||!App.user||!me()) return;
+  const now=Date.now(); const s=T.snap; let changed=false;
+  if((T.phase==='working'||T.phase==='due') && limitState().blocked){ forceStop(limitState().msg); return; }
+  if(T.phase==='working' && now>=T.workStart+s.workMin*60000){ T.phase='due'; T.dueAt=T.workStart+s.workMin*60000; changed=true; notify('休憩の時間です！休憩するとポイントがもらえます'); beep(); }
+  if(T.phase==='due' && now>=T.dueAt+s.graceMin*60000){
+    T.phase='forced'; changed=true;
+    if(sv('autoLock')!==false){ notify('設定した時間に終了しました'); beep(); takeBreak(); return; }
+    notify('休憩してください'); beep();
+  }
+  if(T.phase==='break' && now>=T.breakEnd){ finishBreak(); return; }
+  if(changed){ saveT(); render(true); }
+  updateLive();
+}
+function askNotify(){ try{ if('Notification' in window && Notification.permission==='default') Notification.requestPermission(); }catch{} }
+function notify(msg){
+  try{ if('Notification' in window && Notification.permission==='granted' && document.hidden){
+    if(navigator.serviceWorker) navigator.serviceWorker.getRegistration().then(r=>{ if(r) r.showNotification('やすみタイム',{body:msg,icon:'icon-192.png',vibrate:[200,100,200]}); else new Notification('やすみタイム',{body:msg}); });
+    else new Notification('やすみタイム',{body:msg});
+  } }catch{}
+}
+function beep(){
+  const st=settings();
+  try{ if(st.vibrate!==false && navigator.vibrate) navigator.vibrate([250,120,250]); }catch{}
+  if(st.sound===false) return;
+  try{ const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain(); o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.15;o.start();o.stop(c.currentTime+.35);}catch{}
+}
+function syncWake(){
+  const want=!!(App.user&&me()&&T.phase==='break'&&settings().keepAwake!==false);
+  if(want&&!wl&&!wlBusy&&navigator.wakeLock){ wlBusy=true; navigator.wakeLock.request('screen').then(l=>{ wl=l; l.addEventListener('release',()=>{ wl=null; }); }).catch(()=>{}).finally(()=>{ wlBusy=false; }); }
+  else if(!want&&wl){ wl.release().catch(()=>{}); wl=null; }
+}
+/* 申しこみ・承認の通知（アプリを開いている間） */
+function notifyChanges(d){
+  const cur=new Map(d.requests.map(r=>[r.id,r.status]));
+  if(App.seenReq){
+    for(const r of d.requests){
+      const was=App.seenReq.get(r.id);
+      if(was===undefined && r.status==='pending' && isAdmin() && r.uid!==App.user.uid){ const msg=`${r.name} さんが「${r.rewardName}」との交換を申しこみました`; toast('🎁 '+msg); beep(); notify(msg); }
+      else if(was==='pending' && r.status!=='pending' && r.uid===App.user.uid){ const msg=r.status==='approved'?`「${r.rewardName}」が承認されたよ！`:`「${r.rewardName}」は見送りになりました。ポイントはもどったよ`; toast((r.status==='approved'?'🎉 ':'↩️ ')+msg); beep(); notify(msg); }
+    }
+  }
+  App.seenReq=cur;
+}
+
+/* ---------------- quiz / tips (break overlay) ---------------- */
+const qzKey = () => 'yt_qz_'+App.user.uid;
+function quizCount(){
+  const t0=today0(), uid=App.user.uid;
+  const lg=D().log.filter(l=>l.uid===uid&&l.at>=t0&&(l.type==='quiz_ok'||l.type==='quiz_ng')).length;
+  let loc=0; try{ const x=JSON.parse(localStorage.getItem(qzKey())); if(x&&x.day===dayStr()) loc=x.n; }catch{}
+  return Math.max(lg,loc);
+}
+function bumpQuizCount(){ try{ localStorage.setItem(qzKey(),JSON.stringify({day:dayStr(),n:quizCount()+1})); }catch{} }
+function pickQuiz(){ const L=CONTENT.quiz; if(!L.length) return null; const d=new Date(); const seed=d.getFullYear()*372+d.getMonth()*31+d.getDate(); return L[(seed+quizCount())%L.length]; }
+function roList(){
+  if(roList.c) return roList.c; const a=[], t=CONTENT.tips, f=CONTENT.facts;
+  for(let i=0;i<Math.max(t.length,f.length);i++){ if(t[i]) a.push(t[i]); if(f[i]) a.push({...f[i],title:'豆知識'}); }
+  return roList.c=a;
+}
+function quizHtml(){
+  if(sv('quizOn')===false||!CONTENT.quiz.length) return '';
+  const max=Number(sv('quizMax'))||5, pt=Number(sv('quizPts'))||0;
+  if(!Q||Q.bk!==T.breakStart){
+    if(quizCount()>=max) return '<div class="quizbox"><b>🧠 きょうのクイズはおしまい！</b></div>';
+    Q={bk:T.breakStart,q:pickQuiz(),done:false};
+  }
+  const q=Q.q; if(!q) return '';
+  if(!Q.done) return `<div class="quizbox"><b>🧠 クイズ${pt?`（せいかいで +${pt}pt）`:''}</b><p>${esc(q.q)}</p>${q.c.map((c,i)=>`<button class="qopt" data-act="qans" data-i="${i}">${esc(c)}</button>`).join('')}</div>`;
+  return `<div class="quizbox"><b>${Q.ok?'✅ せいかい！'+(pt?` +${pt}pt`:''):'❌ ざんねん…'}</b><p>こたえ：${esc(q.c[q.a])}<br>${esc(q.e)}</p>${quizCount()<max?'<button class="qopt" data-act="qnext">つぎの問題</button>':''}</div>`;
+}
+async function answerQuiz(i){
+  if(!Q||Q.done||T.phase!=='break') return;
+  const q=Q.q, ok=i===q.a, uid=App.user.uid, name=me().name;
+  Q.done=true; Q.ok=ok; bumpQuizCount(); ovSig=''; renderOverlay();
+  await guard(async()=>{
+    if(ok){
+      const pts=Number(sv('quizPts'))||0, ents=[{type:'quiz_ok',pts,text:q.q.slice(0,30)}], inc={quizOk:1}; let total=pts;
+      const ms=missionsToAward({quiz:1});
+      ms.forEach(x=>{ ents.push({type:'mission',pts:x.bonus,text:missionLabel(x),mid:x.id}); total+=x.bonus; });
+      if(ms.length){ inc.missionsDone=ms.length; toast('🎯 ミッション達成！ +'+ms.reduce((a,x)=>a+x.bonus,0)+'pt'); }
+      inc.points=total; inc.total=total;
+      await commitAward(ents,inc,{});
+    } else await App.adapter.addLog(App.fid,{uid,name,type:'quiz_ng',pts:0,at:Date.now()});
+  });
+}
+
+/* ---------------- ring / live display ---------------- */
+function ringView(){
+  const now=Date.now(), s=T.snap||settings(), p=getComputedStyle(document.documentElement).getPropertyValue('--p').trim()||'#4f7cff';
+  if(T.phase==='working'){ const tot=s.workMin*60000, rem=Math.max(0,T.workStart+tot-now); return {l:'休憩まで',t:fmt(rem),f:rem/tot,c:p}; }
+  if(T.phase==='due'){ const tot=s.graceMin*60000, rem=Math.max(0,T.dueAt+tot-now); return {l:'この時間内に休憩するとポイント',t:fmt(rem),f:rem/tot,c:'#ff8a3d'}; }
+  if(T.phase==='break'){ const tot=(T.breakEnd-T.breakStart), rem=Math.max(0,T.breakEnd-now); return {l:'休憩中',t:fmt(rem),f:rem/tot,c:'#2fb36b'}; }
+  if(T.phase==='forced') return {l:'休憩の時間をこえました',t:'0:00',f:0,c:'#ff8a3d'};
+  return {l:'じゅんびOK（'+s.workMin+'分ごとに休憩）',t:fmt(s.workMin*60000),f:1,c:'#c4cde3'};
+}
+const CIRC = 2*Math.PI*104;
+function updateLive(){
+  const v=ringView();
+  const a=$('#ringArc'); if(a){ a.setAttribute('stroke-dashoffset',(CIRC*(1-Math.max(0,Math.min(1,v.f)))).toFixed(1)); a.setAttribute('stroke',v.c); }
+  const t=$('#ringT'); if(t) t.textContent=v.t;
+  const l=$('#ringL'); if(l) l.textContent=v.l;
+  const ot=$('#ovT'); if(ot) ot.textContent=v.t;
+  const bt=$('#bnT'); if(bt) bt.textContent=v.t;
+  const tp=$('#ovTip');
+  if(tp && T.phase==='break' && sv('tipsOn')!==false){
+    const ro=roList();
+    if(ro.length){ const i=Math.floor((Date.now()-T.breakStart)/15000)%ro.length;
+      if(i!==tipShown){ tipShown=i; const x=ro[i]; tp.innerHTML=`<span class="ti">${esc(x.icon||'💡')}</span><div><b>${esc(x.title||'豆知識')}</b><br>${esc(x.text)}</div>`; } }
+    else tp.style.display='none';
+  }
+  document.title=(T.phase==='due'||T.phase==='forced')?'⏰ 休憩の時間！':'やすみタイム';
+}
+function renderOverlay(){
+  const ov=$('#ov'), bn=$('#banner');
+  const active = App.user && me();
+  const osig = active ? T.phase+(T.breakKind||'') : '';
+  const wantOv = active && (T.phase==='break'||T.phase==='forced');
+  const lockStyle = wantOv && T.phase==='break' && T.breakKind==='forced' && sv('autoLock')!==false;
+  if(osig!==ovSig){
+    ovSig=osig; tipShown=-1;
+    if(wantOv){
+      if(lockStyle){
+        ov.innerHTML=`<div class="in"><div class="lkic">🔒</div><h1>${esc(sv('lockText')||DEFAULTS.lockText)}</h1><p>あと</p><div class="big" id="ovT">0:00</div><p>たつと、また使えるようになります。</p><button class="btn link" data-act="override">🔓 解除する（保護者の合言葉）</button></div>`;
+        ov.className='on forced lock'+(sv('blackout')!==false?' black':'');
+      } else {
+        if(T.phase==='break') ov.innerHTML=`<div class="in"><h1>☕ 休憩中</h1><div class="big" id="ovT">0:00</div>${sv('tipsOn')!==false&&roList().length?'<div class="tipcard" id="ovTip"></div>':''}${quizHtml()}<button class="btn link" data-act="override">休憩をみじかくする・やめる（合言葉）</button></div>`;
+        else ov.innerHTML=`<div class="in"><h1>⏰ 休憩をしてください</h1><p>休憩の時間をこえてしまいました。ポイントはもらえませんが、目とからだのために休憩しましょう。</p><button class="btn big" data-act="takeBreak">休憩をはじめる</button></div>`;
+        ov.className='on'+(T.phase==='forced'||T.breakKind==='forced'?' forced':'');
+      }
+    } else { ov.className=''; ov.innerHTML=''; }
+  }
+  if(!!wantOv!==nbLocked){ nbLocked=!!wantOv; NB.lock(nbLocked,{displayOff:nbLocked&&lockStyle&&sv('displayOff')===true,deviceLock:nbLocked&&lockStyle&&sv('displayOff')===true}); }
+  const bsig = active && T.phase==='due' ? 'due' : '';
+  if(bsig!==bnSig){
+    bnSig=bsig;
+    if(bsig){ bn.innerHTML=`<div class="tx">⏰ 休憩の時間！あと <span id="bnT">0:00</span> 以内に休憩するとポイントがもらえるよ</div><button data-act="takeBreak">休憩する</button>`; bn.className='on'; }
+    else { bn.className=''; bn.innerHTML=''; }
+  }
+  syncWake();
+}
+
+/* ---------------- Views ---------------- */
+function header(){
+  const showUser = ['modes','child','parent','owner','setpin'].includes(App.screen);
+  const inst = deferredInstall ? '<button class="btn ghost sm" data-act="install">📲 インストール</button>' : '';
+  return `<header><div class="logo">⏱️ やすみタイム</div>${inst}${showUser?`<span class="who">${esc(me()?.name||'')}</span>${!['modes','setpin'].includes(App.screen)&&role()!=='child'?'<button class="btn ghost sm" data-act="go" data-to="modes">モード</button>':''}<button class="btn link sm" data-act="logout">ログアウト</button>`:''}</header>`;
+}
+function vLogin(){
+  const hasFb=App.adapter&&App.adapter.kind==='firebase';
+  return `<div class="hero"><h1>⏱️ やすみタイム</h1><div class="muted">時間を守って休憩すると、ポイントがたまるよ</div></div>
+  <div class="card">
+    <button class="btn big" data-act="login">🔑 Googleアカウントでログイン</button>
+    <div class="muted" style="margin-top:12px">ボタンを押すとGoogleの画面が開くので、使うアカウントを選んでください。ポイントや設定はアカウントごとに保存され、パソコンとスマホで同じデータを使えます。</div>
+    ${hasFb?'':`<div class="result ng" style="margin-top:12px">⚠️ まだFirebaseの設定が入っていないため、いまは押してもログインできません。下の「Firebase設定を貼りつける」に設定を貼ると使えるようになります（手順は README.md）。</div>
+    <button class="btn big ghost" style="margin-top:4px" data-act="demo">ログインなしでためしてみる（この端末だけ）</button>`}
+    ${App.error?`<div class="err">${esc(App.error)}</div>`:''}
+    <details ${hasFb?'':'open'}><summary>Firebase設定を貼りつける</summary>
+      <label>firebaseConfig（<code>{ apiKey: ..., authDomain: ... }</code> の部分）</label>
+      <textarea id="cfg" placeholder='{ "apiKey":"...", "authDomain":"...", "projectId":"...", "appId":"..." }'></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn sm" data-act="saveCfg">保存して読み込む</button>${localStorage.getItem('yt_cfg')?'<button class="btn ghost sm" data-act="clearCfg">設定を消す</button>':''}</div>
+    </details>
+  </div>`;
+}
+function vSetup(){
+  return `<div class="hero"><h1>ようこそ</h1><div class="muted">${esc(App.user.name)} さん</div></div>
+  <div class="card"><h2>🏠 家族をつくる（所有者になります）</h2><label>家族の名前</label><input id="famName" placeholder="例: やまだ家" maxlength="20"><button class="btn big" style="margin-top:12px" data-act="createFam">つくる</button></div>
+  <div class="card"><h2>🔑 家族に参加する</h2><div class="muted">所有者から教えてもらった6文字のコードを入れてください。</div><input id="famCode" placeholder="例: AB12CD" maxlength="6" style="margin-top:10px;text-transform:uppercase"><button class="btn big ghost" style="margin-top:12px" data-act="joinFam">参加する</button></div>
+  ${App.error?`<div class="err">${esc(App.error)}</div>`:''}`;
+}
+function vModes(){
+  const r=role(), nopin=!D().pinHash;
+  const note = nopin && r!=='child' ? `<div class="card"><div class="muted">${r==='owner'?'🔐 まだ合言葉が決まっていません。保護者パネル・所有者パネルを開くと、先に合言葉を決める画面になります。':'🔐 所有者が合言葉を決めるまで、保護者パネルは使えません。'}</div></div>` : '';
+  return `<div class="hero"><h1>どの画面にする？</h1><div class="muted">${esc(D().family?.name||'')}</div></div>${note}<div class="modes">
+    <button class="mode" data-act="go" data-to="child"><span class="ic">🧒</span><div><b>子ども画面</b><span>タイマー・ポイント・ごほうび交換</span></div></button>
+    ${r!=='child'?`<button class="mode" data-act="go" data-to="parent"><span class="ic">👪</span><div><b>保護者パネル</b><span>🔒 合言葉が必要 ・ 設定・レポート・ごほうび・承認</span></div></button>`:''}
+    ${r==='owner'?`<button class="mode" data-act="go" data-to="owner"><span class="ic">👑</span><div><b>所有者パネル</b><span>🔒 合言葉が必要 ・ メンバーと役割・家族コード・合言葉の変更</span></div></button>`:''}
+  </div>`;
+}
+function pinCard(){
+  return `<div class="card"><h2>🔐 合言葉（いちばん大事）</h2><div class="muted">保護者パネル・所有者パネルを開くとき、休憩をとちゅうでやめるとき、ログアウトのときに使います。数字でも文字でもOK、長さも自由です。${D().pinHash?'いまは設定ずみです。変えるときだけ、新しい合言葉を入れてください。':''}</div>
+    <label>${D().pinHash?'新しい合言葉':'合言葉'}</label><input id="pin1" type="password" autocomplete="new-password">
+    <label>もう一度</label><input id="pin2" type="password" autocomplete="new-password">
+    <label class="chk"><input type="checkbox" data-chg="showpw"> 文字を表示</label>
+    <button class="btn big" style="margin-top:14px" data-act="setPin">${D().pinHash?'変更する':'決める'}</button></div>`;
+}
+function vSetPin(){
+  return `<div class="hero"><h1>🔐 まず合言葉を決めよう</h1><div class="muted">これを決めるまで、保護者・所有者の画面は開けません。子どもには教えないでね。</div></div>${pinCard()}`;
+}
+function todayStats(){
+  const t0=today0(), uid=App.user.uid; const L=D().log.filter(l=>l.uid===uid&&l.at>=t0);
+  return {ok:L.filter(l=>l.type==='break_ok').length, pts:L.filter(l=>['break_ok','streak','mission','quiz_ok'].includes(l.type)).reduce((a,l)=>a+(l.pts||0),0), miss:L.filter(l=>l.type==='break_forced'||l.type==='break_aborted').length};
+}
+const REQ_LABEL={pending:'承認まち',approved:'承認ずみ',rejected:'見送り'};
+function rewardLimitText(r){
+  const a=[]; if(r.perDay>0) a.push('1日'+r.perDay+'回まで'); if(r.perWeek>0) a.push('週'+r.perWeek+'回まで'); if(r.expires) a.push(r.expires+'まで');
+  return a.join(' ・ ');
+}
+function rewardStatus(r){
+  const uid=App.user.uid, reqs=D().requests.filter(q=>q.uid===uid&&q.rewardId===r.id&&q.status!=='rejected');
+  if(r.expires && dayStr()>r.expires) return {ok:false,why:'きげんぎれ'};
+  if(r.perDay>0 && reqs.filter(q=>q.at>=today0()).length>=r.perDay) return {ok:false,why:'きょうはおわり'};
+  if(r.perWeek>0 && reqs.filter(q=>q.at>=weekStart()).length>=r.perWeek) return {ok:false,why:'こんしゅうはおわり'};
+  return {ok:true};
+}
+function vChild(){
+  const m=me(), s=T.snap||settings(), st=todayStats(), lv=levelOf(m.total||0), streak=curStreak(m), lim=limitState();
+  const fs=settings(), limMin=Number(fs.dailyLimitMin)||0, usedMin=Math.round(usedMs()/60000);
+  const myReq=D().requests.filter(r=>r.uid===App.user.uid).slice(0,5);
+  let btn='';
+  if(T.phase==='idle') btn = lim.blocked ? `<div class="result ng">${esc(lim.msg)}</div><button class="btn big" disabled>▶ タイマーをはじめる</button>` : `<button class="btn big" data-act="start">▶ タイマーをはじめる</button>`;
+  else if(T.phase==='working') btn=`<button class="btn ghost" style="width:100%" data-act="endSess">きょうは おわる</button>`;
+  else if(T.phase==='due') btn=`<button class="btn big warn" data-act="takeBreak">☕ 休憩する（+${s.points}pt）</button>`;
+  let last='';
+  if(T.phase==='idle'&&T.last){
+    const k=T.last.kind;
+    if(k==='ok') last=`<div class="result ok">🎉 休憩できたね！ 合計 +${T.last.pts}pt${T.last.parts?.length>1?'<br>'+T.last.parts.map(esc).join('<br>'):''}</div>`;
+    else if(k==='limit') last=`<div class="result ng">${esc(T.last.msg||'今日はここまで')}</div>`;
+    else if(k==='shortened') last=`<div class="result ok">☕ もう休憩が終わりです。タイマーをはじめられます（この休憩ではポイントは入りません）</div>`;
+    else last=`<div class="result ng">${k==='aborted'?'休憩をやめたので、':'時間をこえたので、'}ポイントはなしでした。つぎはがんばろう！</div>`;
+  }
+  const goal=D().rewards.find(r=>r.id===m.goalId);
+  const goalCard = goal ? `<div class="card"><h2>🎯 もくひょう</h2><div class="row"><b class="grow">${esc(goal.name)}</b><span class="muted">${m.points||0} / ${goal.cost}pt</span></div><div class="bar gold" style="margin-top:8px"><i style="width:${Math.min(100,Math.round((m.points||0)/goal.cost*100))}%"></i></div><div class="muted" style="margin-top:6px">${(m.points||0)>=goal.cost?'もう交換できるよ！ 下のごほうびから交換しよう':'あと '+(goal.cost-(m.points||0))+'pt でゲット！'}</div></div>` : '';
+  const ms=missions();
+  const misCard = ms.length ? `<div class="card"><h2>🎯 きょうのミッション</h2>${ms.map(x=>{ const c=Math.min(x.target,missionCount(x.kind)), done=missionDone(x); return `<div class="mis"><div class="grow"><b>${esc(missionLabel(x))}</b><div class="bar" style="margin-top:6px"><i style="width:${Math.round(c/x.target*100)}%"></i></div></div><div style="text-align:right;white-space:nowrap">${done?'<span class="chip approved">達成！</span>':`${c}/${x.target}`}<div class="muted">+${x.bonus}pt</div></div></div>`; }).join('')}</div>` : '';
+  const rewCard = `<div class="card"><h2>🎁 ごほうびと交換</h2>${D().rewards.length?D().rewards.map(r=>{ const rs=rewardStatus(r), can=rs.ok&&(m.points||0)>=r.cost, lt=rewardLimitText(r); return `<div class="item"><div class="grow"><b>${esc(r.name)}</b><div class="muted">⭐ ${r.cost}pt${lt?' ・ '+esc(lt):''}${rs.ok?'':' ・ <b>'+rs.why+'</b>'}</div></div><button class="btn ghost sm" data-act="goal" data-id="${r.id}" ${m.goalId===r.id?'disabled':''}>🎯</button><button class="btn sm" data-act="redeem" data-id="${r.id}" ${can?'':'disabled'}>交換</button></div>`; }).join(''):'<div class="muted">まだごほうびがありません。保護者にたのんで登録してもらおう。</div>'}
+    ${myReq.length?`<h3>交換のようす</h3>${myReq.map(r=>`<div class="item"><div class="grow">${esc(r.rewardName)} <span class="muted">(${r.cost}pt)</span></div><span class="chip ${r.status}">${REQ_LABEL[r.status]||r.status}</span></div>`).join('')}`:''}</div>`;
+  const have=badgeIds(m);
+  const badgeCard = `<div class="card"><h2>🏅 バッジ <span class="muted">${have.length}/${BADGES.length}</span></h2><div class="badges">${BADGES.map(b=>`<div class="bd ${have.includes(b.id)?'':'off'}"><div class="i">${b.i}</div><b>${esc(b.n)}</b><span>${esc(b.d)}</span></div>`).join('')}</div></div>`;
+  const themeCard = `<div class="card"><h2>🎨 きせかえ</h2><div class="muted" style="margin-bottom:10px">レベルが上がると、使えるテーマがふえるよ</div><div class="tchips">${Object.entries(THEMES).map(([id,t])=>{ const lock=t.lv>lv.lv; return `<button class="tchip ${themeFor(m)===id?'on':''}" data-act="theme" data-id="${id}" ${lock?'disabled':''}>${t.n}${lock?` 🔒Lv${t.lv}`:''}</button>`; }).join('')}</div></div>`;
+  return `<div class="card" style="text-align:center"><div class="muted">${esc(m.name)} さんのポイント</div><div class="pts">⭐ ${m.points||0}</div>
+    <div class="lvrow"><span class="lv">Lv${lv.lv} ${esc(lv.title)}</span><div class="bar grow"><i style="width:${lv.pct}%"></i></div></div>
+    <div class="muted" style="margin-top:6px">${lv.nxt==null?'いちばん上のレベル！':'つぎのレベルまで あと '+(lv.nxt-(m.total||0))+'pt'}${streak>0?' ・ 🔥 '+streak+'日れんぞく':''}</div></div>
+  <div class="card">${last}
+    <div class="ringwrap"><svg viewBox="0 0 240 240"><circle cx="120" cy="120" r="104" fill="none" style="stroke:var(--soft)" stroke-width="16"/><circle id="ringArc" cx="120" cy="120" r="104" fill="none" stroke="#4f7cff" stroke-width="16" stroke-linecap="round" stroke-dasharray="${CIRC.toFixed(1)}" stroke-dashoffset="0"/></svg>
+      <div class="mid"><div class="t" id="ringT">0:00</div><div class="l" id="ringL"></div></div></div>
+    ${btn}
+    <div class="muted" style="margin-top:12px;text-align:center">${s.workMin}分つかったら休憩（${s.breakMin}分）。知らせが出てから${s.graceMin}分いないに休憩すると +${s.points}pt${limMin>0?`<br>きょうの使用 ${usedMin}分 / ${limMin}分`:''}</div>
+  </div>
+  <div class="card"><h2>きょうの記録</h2><div class="stats"><div><b>${st.ok}</b><span>休憩できた</span></div><div><b>${st.pts}</b><span>もらったpt</span></div><div><b>${st.miss}</b><span>とばした</span></div></div></div>
+  ${goalCard}${misCard}${rewCard}${badgeCard}${themeCard}`;
+}
+const TABS_P=[['members','みんな'],['report','レポート'],['settings','設定'],['kid','子どもごと'],['rewards','ごほうび'],['missions','ミッション'],['requests','承認'],['history','履歴']];
+function sessionText(m){
+  const x=m.session; if(!x) return '記録なし';
+  const ago=Date.now()-x.at; if(ago>6*3600000) return '待機中（'+hhmm(x.at)+'更新）';
+  if(x.phase==='working') return '使用中（休憩まで'+fmt(x.until-Date.now())+'）';
+  if(x.phase==='due') return '休憩の知らせ中';
+  if(x.phase==='break') return '休憩中';
+  if(x.phase==='forced') return '休憩とばし中';
+  return '待機中（'+hhmm(x.at)+'更新）';
+}
+function weekRows(uid){
+  const rows=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i); const d0=d.getTime(), d1=d0+864e5;
+    const L=D().log.filter(l=>l.uid===uid&&l.at>=d0&&l.at<d1);
+    rows.push({d, use:L.filter(l=>l.type==='usage').reduce((a,l)=>a+(l.ms||0),0), ok:L.filter(l=>l.type==='break_ok').length, pts:L.filter(l=>['break_ok','streak','mission','quiz_ok'].includes(l.type)).reduce((a,l)=>a+(l.pts||0),0)});
+  }
+  return rows;
+}
+function vReport(){
+  const mem=Object.entries(D().members);
+  return `<div class="card"><h2>📊 この7日間のレポート</h2><div class="muted">棒＝使用時間 ／ ✓＝休憩できた回数 ／ ＋＝もらったポイント<br>（使用時間は、休憩のタイマーを使った時間です）</div></div>`+mem.map(([uid,m])=>{
+    const rows=weekRows(uid), mx=Math.max(1,...rows.map(r=>r.use)), tu=rows.reduce((a,r)=>a+r.use,0), to=rows.reduce((a,r)=>a+r.ok,0), tp=rows.reduce((a,r)=>a+r.pts,0), lv=levelOf(m.total||0);
+    return `<div class="card"><h2>${esc(m.name)} <span class="chip ${m.role}">${ROLE[m.role]||m.role}</span></h2>
+      <div class="muted">合計：使用 ${fmtMin(tu)} ／ 休憩できた ${to}回 ／ +${tp}pt<br>Lv${lv.lv} ${esc(lv.title)} ・ バッジ ${badgeIds(m).length}/${BADGES.length} ・ 連続 ${curStreak(m)}日</div>
+      <div style="margin-top:8px">${rows.map(r=>`<div class="rrow"><span class="rv" style="text-align:left">${r.d.getMonth()+1}/${r.d.getDate()}</span><div class="rbar"><i style="width:${Math.round(r.use/mx*100)}%"></i></div><span class="rv">${Math.round(r.use/60000)}分</span><span class="rv">✓${r.ok}</span><span class="rv">+${r.pts}</span></div>`).join('')}</div></div>`;
+  }).join('');
+}
+function vParent(){
+  const pend=D().requests.filter(r=>r.status==='pending').length;
+  const tabs=`<div class="tabs">${TABS_P.map(([k,n])=>`<button class="${App.tab===k?'on':''}" data-act="tab" data-t="${k}">${n}${k==='requests'&&pend?`<span class="badge">${pend}</span>`:''}</button>`).join('')}</div>`;
+  const f=famSettings(); let b='';
+  if(App.tab==='members'){
+    b=`<div class="card"><h2>みんなの状況</h2>${Object.entries(D().members).map(([uid,m])=>{ const lv=levelOf(m.total||0), us=(m.usageDay===dayStr()?(m.usageMs||0):0); return `<div class="item"><div class="av">${esc((m.name||'?')[0])}</div><div class="grow"><b>${esc(m.name)}</b> <span class="chip ${m.role}">${ROLE[m.role]||m.role}</span><div class="muted">${esc(sessionText(m))}<br>Lv${lv.lv} ・ 連続${curStreak(m)}日 ・ 今日 ${fmtMin(us)}</div></div><div style="text-align:right"><b>⭐ ${m.points||0}</b><br><button class="btn ghost sm" data-act="adjust" data-uid="${uid}">調整</button></div></div>`; }).join('')}</div>`;
+  } else if(App.tab==='report'){
+    b=vReport();
+  } else if(App.tab==='settings'){
+    b=`<div class="card"><h2>家族の標準設定</h2><div class="muted">「子どもごと」で人別に変えていなければ、全員これが使われます。</div>
+      <label>休憩までの時間（分）</label><input id="sWork" type="number" step="0.1" min="0.1" value="${f.workMin}" inputmode="decimal">
+      <label>休憩の長さ（分）</label><input id="sBreak" type="number" step="0.1" min="0.1" value="${f.breakMin}" inputmode="decimal">
+      <label>休憩の知らせが出てから、ポイントがもらえる猶予（分）</label><input id="sGrace" type="number" step="0.1" min="0.1" value="${f.graceMin}" inputmode="decimal">
+      <label>休憩できたときのポイント</label><input id="sPts" type="number" step="1" min="1" value="${f.points}" inputmode="numeric">
+      <h3>使いすぎ防止</h3>
+      <label>1日の使用上限（分・0で制限なし）</label><input id="sLimit" type="number" step="1" min="0" value="${f.dailyLimitMin}" inputmode="numeric">
+      <label class="chk"><input type="checkbox" id="sQuiet" ${f.quietOn?'checked':''}> 使えない時間帯をつくる</label>
+      <div class="two"><div><label>から</label><input id="sQs" type="time" value="${esc(f.quietStart)}"></div><div><label>まで</label><input id="sQe" type="time" value="${esc(f.quietEnd)}"></div></div>
+      <h3>ボーナス</h3>
+      <div class="two"><div><label>3日れんぞくのボーナス(pt)</label><input id="sSt3" type="number" min="0" value="${f.streak3}" inputmode="numeric"></div><div><label>7日れんぞくのボーナス(pt)</label><input id="sSt7" type="number" min="0" value="${f.streak7}" inputmode="numeric"></div></div>
+      <h3>休憩中の画面</h3>
+      <label class="chk"><input type="checkbox" id="sTips" ${f.tipsOn!==false?'checked':''}> 目の体操・豆知識を出す</label>
+      <label class="chk"><input type="checkbox" id="sQuiz" ${f.quizOn!==false?'checked':''}> クイズを出す</label>
+      <div class="two"><div><label>クイズ正解のポイント</label><input id="sQpt" type="number" min="0" value="${f.quizPts}" inputmode="numeric"></div><div><label>1日のクイズ上限（問）</label><input id="sQmax" type="number" min="1" value="${f.quizMax}" inputmode="numeric"></div></div>
+      <h3>時間になったときのロック</h3>
+      <label class="chk"><input type="checkbox" id="sAuto" ${f.autoLock!==false?'checked':''}> 猶予をすぎたら、自動で画面をロックして休憩させる</label>
+      <label class="chk"><input type="checkbox" id="sBlack" ${f.blackout!==false?'checked':''}> ロック中は画面を真っ暗にして、メッセージだけ出す</label>
+      <label>ロック中に出すメッセージ</label><input id="sLockText" maxlength="40" value="${esc(f.lockText||DEFAULTS.lockText)}">
+      <label class="chk"><input type="checkbox" id="sDispOff" ${f.displayOff?'checked':''}> アプリ版：ロック中に画面（ディスプレイ）の電源を切る</label>
+      <div class="muted" style="margin-top:6px">アプリ版（Windows・Mac・Android）では、ロック中は全画面で最前面に出ます。ブラウザ版は画面全体をおおうだけで、ほかのウィンドウは使えてしまいます。ロックは、保護者の合言葉か作者のマスターパスワードで一時的に解除でき、残りの休憩を0分にすると「もう休憩が終わりです」になります。</div>
+      ${NB.kind==='android'?'<button class="btn ghost sm" data-act="androidAdmin" style="margin-top:10px">📱 この端末で画面ロックを使えるようにする</button>':''}
+      <h3>スマホ・パソコンの動き</h3>
+      <label class="chk"><input type="checkbox" id="sSound" ${f.sound!==false?'checked':''}> 知らせの音をならす</label>
+      <label class="chk"><input type="checkbox" id="sVib" ${f.vibrate!==false?'checked':''}> バイブレーション（Android）</label>
+      <label class="chk"><input type="checkbox" id="sAwake" ${f.keepAwake!==false?'checked':''}> 休憩中は画面を暗くしない</label>
+      <button class="btn big" style="margin-top:16px" data-act="saveSettings">保存</button>
+      <div class="muted" style="margin-top:10px">変更は、つぎにタイマーをはじめるときから反映されます。ためすときは 0.1 分（6秒）なども入れられます。</div></div>`;
+  } else if(App.tab==='kid'){
+    const kids=Object.entries(D().members); const sel=(App.kidSel&&D().members[App.kidSel])?App.kidSel:kids[0][0]; const m=D().members[sel], o=m.settings||{};
+    const ph=k=>`標準: ${f[k]}`;
+    b=`<div class="card"><h2>子どもごとの設定</h2><div class="muted">空らんのところは、家族の標準設定が使われます。</div>
+      <label>だれの設定？</label><select data-chg="kidsel">${kids.map(([u,x])=>`<option value="${u}" ${u===sel?'selected':''}>${esc(x.name)}（${ROLE[x.role]||x.role}）</option>`).join('')}</select>
+      <div class="two"><div><label>休憩までの時間（分）</label><input id="kWork" type="number" step="0.1" min="0.1" placeholder="${ph('workMin')}" value="${o.workMin??''}"></div><div><label>休憩の長さ（分）</label><input id="kBreak" type="number" step="0.1" min="0.1" placeholder="${ph('breakMin')}" value="${o.breakMin??''}"></div></div>
+      <div class="two"><div><label>猶予（分）</label><input id="kGrace" type="number" step="0.1" min="0.1" placeholder="${ph('graceMin')}" value="${o.graceMin??''}"></div><div><label>休憩のポイント</label><input id="kPts" type="number" min="1" placeholder="${ph('points')}" value="${o.points??''}"></div></div>
+      <label>1日の使用上限（分・0で制限なし）</label><input id="kLimit" type="number" min="0" placeholder="${ph('dailyLimitMin')}" value="${o.dailyLimitMin??''}">
+      <div class="row" style="margin-top:14px"><button class="btn" data-act="saveKid" data-uid="${sel}">保存</button><button class="btn ghost" data-act="resetKid" data-uid="${sel}">標準にもどす</button></div></div>`;
+  } else if(App.tab==='rewards'){
+    b=`<div class="card"><h2>ごほうび一覧</h2>${D().rewards.length?D().rewards.map(r=>{ const lt=rewardLimitText(r); return `<div class="item"><div class="grow"><b>${esc(r.name)}</b><div class="muted">⭐ ${r.cost}pt${lt?' ・ '+esc(lt):''}</div></div><button class="btn bad sm" data-act="delReward" data-id="${r.id}">削除</button></div>`; }).join(''):'<div class="muted">まだありません</div>'}
+      <h3>ごほうびを追加</h3>
+      <div class="two"><div><label>名前</label><input id="rName" placeholder="例: 映画をみる" maxlength="30"></div><div><label>ポイント</label><input id="rCost" type="number" min="1" inputmode="numeric"></div></div>
+      <div class="two"><div><label>1日の回数（0で無制限）</label><input id="rDay" type="number" min="0" value="0" inputmode="numeric"></div><div><label>1週間の回数（0で無制限）</label><input id="rWeek" type="number" min="0" value="0" inputmode="numeric"></div></div>
+      <label>いつまで（空らんで期限なし）</label><input id="rExp" type="date">
+      <button class="btn" style="margin-top:12px" data-act="addReward">追加</button></div>`;
+  } else if(App.tab==='missions'){
+    b=`<div class="card"><h2>デイリーミッション</h2><div class="muted">毎日リセットされます。達成するとボーナスポイントがもらえます。</div>${missions().length?missions().map(x=>`<div class="item"><div class="grow"><b>${esc(missionLabel(x))}</b><div class="muted">達成で +${x.bonus}pt</div></div><button class="btn bad sm" data-act="delMission" data-id="${x.id}">削除</button></div>`).join(''):'<div class="muted" style="margin-top:8px">まだありません</div>'}
+      <h3>ミッションを追加</h3>
+      <label>種類</label><select id="mKind"><option value="breaks">休憩を◯回できる</option><option value="quiz">クイズに◯問せいかいする</option></select>
+      <div class="two"><div><label>回数</label><input id="mTarget" type="number" min="1" value="3" inputmode="numeric"></div><div><label>ボーナス(pt)</label><input id="mBonus" type="number" min="1" value="10" inputmode="numeric"></div></div>
+      <button class="btn" style="margin-top:12px" data-act="addMission">追加</button></div>`;
+  } else if(App.tab==='requests'){
+    const P=D().requests.filter(r=>r.status==='pending'), R=D().requests.filter(r=>r.status!=='pending').slice(0,10);
+    b=`<div class="card"><h2>交換のリクエスト</h2>${P.length?P.map(r=>`<div class="item"><div class="grow"><b>${esc(r.name)}</b> → ${esc(r.rewardName)}<div class="muted">⭐ ${r.cost}pt ・ ${hhmm(r.at)}</div></div><button class="btn ok sm" data-act="approve" data-id="${r.id}">承認</button><button class="btn bad sm" data-act="reject" data-id="${r.id}">見送り</button></div>`).join(''):'<div class="muted">承認まちはありません</div>'}
+      ${R.length?`<h3>最近のもの</h3>${R.map(r=>`<div class="item"><div class="grow">${esc(r.name)} → ${esc(r.rewardName)}</div><span class="chip ${r.status}">${REQ_LABEL[r.status]||r.status}</span></div>`).join('')}`:''}
+      <div class="muted" style="margin-top:10px">交換を申しこんだ時点でポイントは引かれます。見送りにすると返ります。アプリを開いているときは、申しこみがあると通知が出ます。</div></div>`;
+  } else {
+    const T_={break_ok:'✅ 休憩できた',break_forced:'⚠️ 休憩がおくれた',break_aborted:'⛔ 休憩をやめた',break_shortened:'⏩ 解除して休憩をみじかくした',redeem:'🎁 交換',adjust:'🛠 ポイント調整',approve:'👍 承認',reject:'↩️ 見送り',streak:'🔥 れんぞくボーナス',mission:'🎯 ミッション達成',quiz_ok:'🧠 クイズせいかい',quiz_ng:'🧠 クイズ(ざんねん)'};
+    b=`<div class="card"><h2>履歴（新しい順）</h2>${D().log.filter(l=>l.type!=='usage').slice(0,60).map(l=>`<div class="item"><div class="grow"><b>${esc(l.name||'')}</b> ${T_[l.type]||l.type}${l.text?` <span class="muted">${esc(l.text)}</span>`:''}</div><span class="muted">${new Date(l.at).getMonth()+1}/${new Date(l.at).getDate()} ${hhmm(l.at)}${l.pts?` ・ ${l.pts>0?'+':''}${l.pts}pt`:''}</span></div>`).join('')||'<div class="muted">まだありません</div>'}</div>`;
+  }
+  return `<div class="hero" style="padding-top:6px"><h1 style="font-size:22px">👪 保護者パネル</h1></div>${tabs}${b}`;
+}
+function vOwner(){
+  const f=D().family;
+  return `<div class="hero" style="padding-top:6px"><h1 style="font-size:22px">👑 所有者パネル</h1></div>
+  ${pinCard()}
+  <div class="card"><h2>家族コード</h2><div class="muted">家族がログインして「家族に参加する」でこのコードを入れると参加できます。</div>
+    <div class="row" style="margin-top:10px"><div class="pts" style="letter-spacing:4px;font-size:30px">${esc(f.code)}</div><button class="btn ghost sm" data-act="copyCode">コピー</button></div>
+    <label>家族の名前</label><div class="row"><div class="grow"><input id="oName" value="${esc(f.name)}" maxlength="20"></div><button class="btn sm" data-act="renameFam">変更</button></div></div>
+  <div class="card"><h2>メンバーと役割</h2><div class="muted">参加した人は最初「子ども」です。保護者にする人は役割を変えてください。</div>
+    ${Object.entries(D().members).map(([uid,m])=>`<div class="item"><div class="av">${esc((m.name||'?')[0])}</div><div class="grow"><b>${esc(m.name)}</b><div class="muted">⭐ ${m.points||0}pt</div></div>${m.role==='owner'?`<span class="chip owner">所有者</span>`:`<select style="width:110px" data-chg="role" data-uid="${uid}"><option value="child" ${m.role==='child'?'selected':''}>子ども</option><option value="parent" ${m.role==='parent'?'selected':''}>保護者</option></select><button class="btn bad sm" data-act="removeMember" data-uid="${uid}">外す</button>`}</div>`).join('')}</div>
+  ${isCreator()?`<div class="card"><h2>🗝️ 作者マスターパスワード</h2><div class="muted">どの家族でも、休憩中のロックを一時的に解除できるパスワードです。作者（このアプリを作った人）のGoogleアカウントだけが設定できます。${App.masterHash?'いまは<b>設定ずみ</b>です。':'まだ設定されていません。'}他の人には教えないでください。8文字以上の長めの文章がおすすめです。</div>
+    <label>新しいマスターパスワード</label><input id="mp1" type="password" autocomplete="new-password">
+    <label>もう一度</label><input id="mp2" type="password" autocomplete="new-password">
+    <button class="btn big" style="margin-top:14px" data-act="setMaster">${App.masterHash?'変更する':'設定する'}</button>
+    ${App.masterHash?'<button class="btn bad sm" style="margin-top:10px" data-act="clearMaster">マスターを無効にする</button>':''}</div>`:''}
+  ${App.adapter.kind==='local'?`<div class="card"><h2>お試しモード</h2><div class="muted">この端末だけに保存されています。</div><button class="btn bad sm" style="margin-top:10px" data-act="resetDemo">データを全部消す</button></div>`:''}`;
+}
+
+function render(force){
+  const ae=document.activeElement;
+  if(!force && ae && /INPUT|SELECT|TEXTAREA/.test(ae.tagName) && $('#app').contains(ae)){ App.dirty=true; return; }
+  App.dirty=false;
+  let body='';
+  try{
+    if(App.data?.ready && me()) applyTheme(themeFor(me())); else applyTheme('normal');
+    if(App.screen==='boot') body='<div class="hero"><div class="muted">よみこみ中…</div></div>';
+    else if(App.screen==='login') body=vLogin();
+    else if(App.screen==='setup') body=vSetup();
+    else if(!App.data||!App.data.ready||!me()) body='<div class="hero"><div class="muted">よみこみ中…</div></div>';
+    else if(App.screen==='setpin') body=role()==='owner'?vSetPin():vModes();
+    else if(App.screen==='modes') body=vModes();
+    else if(App.screen==='child') body=vChild();
+    else if(App.screen==='parent') body=isAdmin()?vParent():vModes();
+    else if(App.screen==='owner') body=role()==='owner'?vOwner():vModes();
+  }catch(e){ console.error(e); body='<div class="card err">表示でエラーが起きました: '+esc(e.message)+'</div>'; }
+  $('#app').innerHTML=header()+`<main>${body}</main>`;
+  renderOverlay(); updateLive();
+}
+document.addEventListener('focusout',()=>setTimeout(()=>{ if(App.dirty) render(); },60));
+
+/* ---------------- Navigation & actions ---------------- */
+async function go(to){
+  if(to==='parent'||to==='owner'){
+    if(!D().pinHash){
+      if(role()==='owner'){ App.screen='setpin'; render(true); scrollTo(0,0); return; }
+      toast('所有者が合言葉を決めるまで、保護者パネルは使えません'); return;
+    }
+    if(!(await requirePin())) return;
+    askNotify();
+  } else { App.pinUntil=0; }
+  App.screen=to; if(to==='parent'&&!App.tab) App.tab='members'; render(true); scrollTo(0,0);
+}
+async function enter(fid){
+  App.fid=fid; App.data=null; App.seenReq=null; loadT();
+  App.masterHash=null; try{ App.adapter.getMaster().then(h=>{ App.masterHash=h||null; }).catch(()=>{}); }catch{}
+  if(App.unsub) App.unsub();
+  let first=true;
+  App.unsub=App.adapter.watch(fid,async d=>{
+    App.data=d;
+    if(d.ready){
+      if(!d.family || !d.members[App.user.uid]){
+        if(App.unsub){App.unsub();App.unsub=null;}
+        await App.adapter.leave(App.user.uid).catch(()=>{});
+        App.fid=null; App.screen='setup'; App.error='家族から外れたか、家族が見つかりませんでした。'; render(true); return;
+      }
+      notifyChanges(d);
+      if(first){ first=false; App.screen = role()==='child' ? 'child' : (role()==='owner'&&!d.pinHash ? 'setpin' : 'modes'); render(true); return; }
+      if(role()==='child' && App.screen!=='child') App.screen='child';
+      if(role()==='owner' && !d.pinHash && App.screen!=='setpin') App.screen='setpin';
+    }
+    render();
+  });
+}
+async function onUser(u){
+  App.user=u; App.error='';
+  if(!u){ if(App.unsub){App.unsub();App.unsub=null;} App.fid=null;App.data=null; App.screen='login'; render(true); return; }
+  App.screen='boot'; render(true);
+  try{
+    const fid=await App.adapter.getMyFid(u.uid);
+    if(fid) await enter(fid); else { App.screen='setup'; render(true); }
+  }catch(e){ console.error(e); App.error='読みこみに失敗しました: '+(e.code||e.message)+'\nFirestoreのルールと設定を確認してください。'; App.screen='login'; render(true); }
+}
+
+document.addEventListener('click',async e=>{
+  const el=e.target.closest('[data-act]'); if(!el) return;
+  const act=el.dataset.act, id=el.dataset.id, uid=el.dataset.uid, fid=App.fid, A=App.adapter;
+  if(el.disabled) return;
+  switch(act){
+    case 'login': {
+      App.error='';
+      if(!A||A.kind!=='firebase'){ App.error='Googleログインには Firebase の設定が必要です。下の「Firebase設定を貼りつける」に貼ってください（手順は README.md）。'; render(true); break; }
+      if(NB.on){
+        const h=String(window.YASUMI_HOST||'').trim();
+        if(!h){ App.error='ログイン用のページのアドレスが設定されていません（native-config.js の YASUMI_HOST）。'; render(true); break; }
+        NB.open(h.replace(/\/?$/,'/')+'native-login.html?redirect='+encodeURIComponent(NB.redirect));
+        toast('ブラウザが開きます。Googleでログインしたら、このアプリにもどってきます'); break;
+      }
+      try{ await A.signIn(); }catch(err){
+        const m={'auth/unauthorized-domain':'このアドレスがFirebaseの「承認済みドメイン」に入っていません。Authentication → 設定 で追加してください。','auth/operation-not-allowed':'FirebaseでGoogleログインが有効になっていません。Authentication → ログイン方法 で有効にしてください。','auth/network-request-failed':'ネットワークに接続できません。'};
+        App.error=m[err.code]||('ログインできませんでした: '+(err.code||err.message)); render(true);
+      } break; }
+    case 'demo': localStorage.setItem('yt_demo','1'); App.adapter=makeLocal(); App.adapter.onAuth(onUser); break;
+    case 'saveCfg': {
+      try{ let t=$('#cfg').value.trim(); t=t.replace(/^\s*(const|let|var)\s+\w+\s*=\s*/,'').replace(/;\s*$/,'');
+        let cfg; try{ cfg=JSON.parse(t); }catch{ cfg=(new Function('return ('+t+')'))(); }
+        if(!cfg.apiKey||!cfg.projectId) throw new Error('apiKey と projectId が見つかりません');
+        localStorage.setItem('yt_cfg',JSON.stringify(cfg)); localStorage.removeItem('yt_demo'); location.reload();
+      }catch(err){ App.error='設定を読みこめません: '+err.message; render(true); }
+      break; }
+    case 'clearCfg': localStorage.removeItem('yt_cfg'); location.reload(); break;
+    case 'logout': if(T.phase!=='idle' && !(await requirePin())) break; await guard(()=>A.signOut()); if(A.kind==='local') location.reload(); break;
+    case 'install': if(deferredInstall){ deferredInstall.prompt(); try{ await deferredInstall.userChoice; }catch{} deferredInstall=null; render(true); } break;
+    case 'go': go(el.dataset.to); break;
+    case 'tab': App.tab=el.dataset.t; render(true); break;
+    case 'createFam': { const n=$('#famName').value.trim(); if(!n) return toast('家族の名前を入れてください');
+      await guard(async()=>{ const code=await A.createFamily(App.user,n); App.error=''; await enter(code); }); break; }
+    case 'joinFam': { const c=$('#famCode').value.trim(); if(c.length<4) return toast('コードを入れてください');
+      try{ const code=await A.joinFamily(App.user,c); App.error=''; await enter(code); }catch(err){ App.error=err.message||'参加できませんでした'; render(true); } break; }
+    case 'start': startSession(); break;
+    case 'endSess': if(confirm('今日はここでおわりますか？（ポイントはもらえません）')) endSession(); break;
+    case 'takeBreak': takeBreak(); break;
+    case 'abort': case 'override': overrideBreak(); break;
+    case 'setMaster': { if(!isCreator()) return; const a=$('#mp1')?.value??'', b=$('#mp2')?.value??'';
+      if(a.length<8) return toast('8文字以上にしてください');
+      if(a!==b) return toast('2つが同じではありません');
+      await guard(async()=>{ await A.setMaster(await hashMaster(a)); App.masterHash=await A.getMaster(); toast('マスターパスワードを設定しました'); render(true); }); break; }
+    case 'clearMaster': if(isCreator()&&confirm('マスターパスワードを無効にしますか？')) await guard(async()=>{ await A.setMaster(null); App.masterHash=null; toast('無効にしました'); render(true); }); break;
+    case 'androidAdmin': try{ const r=await NB.admin(); toast(r&&r.active?'すでに許可されています':'表示された画面で「有効にする」を押してください'); }catch{ toast('この端末では使えません'); } break;
+    case 'qans': answerQuiz(parseInt(el.dataset.i,10)); break;
+    case 'qnext': if(T.phase==='break'&&sv('quizOn')!==false){ Q={bk:T.breakStart,q:pickQuiz(),done:false}; ovSig=''; renderOverlay(); } break;
+    case 'theme': await guard(()=>A.setMember(fid,App.user.uid,{theme:id})); break;
+    case 'goal': await guard(async()=>{ await A.setMember(fid,App.user.uid,{goalId:id}); toast('もくひょうにしたよ！'); }); break;
+    case 'redeem': { const r=D().rewards.find(x=>x.id===id); if(!r) return;
+      const rs=rewardStatus(r); if(!rs.ok) return toast('このごほうびは、いまは交換できません（'+rs.why+'）');
+      if((me().points||0)<r.cost) return toast('ポイントがたりません');
+      if(!confirm(`「${r.name}」と交換しますか？（${r.cost}pt）\n保護者の承認でもらえます。`)) return;
+      await guard(async()=>{ const m0=me(), m2={...m0,redeems:(m0.redeems||0)+1}, nb=badgeIds(m2).filter(x=>!badgeIds(m0).includes(x));
+        await A.bump(fid,App.user.uid,{points:-r.cost,redeems:1},{});
+        await A.addRequest(fid,{uid:App.user.uid,name:me().name,rewardId:r.id,rewardName:r.name,cost:r.cost,status:'pending',at:Date.now()});
+        await A.addLog(fid,{uid:App.user.uid,name:me().name,type:'redeem',pts:-r.cost,text:r.name,at:Date.now()});
+        toast(nb.length?`申しこみました！ 🏅 バッジ「${BADGES.find(b=>b.id===nb[0]).n}」をゲット！`:'申しこみました！'); }); break; }
+    case 'saveSettings': { const s={workMin:num($('#sWork').value,DEFAULTS.workMin),breakMin:num($('#sBreak').value,DEFAULTS.breakMin),graceMin:num($('#sGrace').value,DEFAULTS.graceMin),points:Math.round(num($('#sPts').value,DEFAULTS.points)),
+        dailyLimitMin:int0($('#sLimit').value),quietOn:$('#sQuiet').checked,quietStart:$('#sQs').value||'21:00',quietEnd:$('#sQe').value||'07:00',
+        streak3:int0($('#sSt3').value,DEFAULTS.streak3),streak7:int0($('#sSt7').value,DEFAULTS.streak7),tipsOn:$('#sTips').checked,quizOn:$('#sQuiz').checked,quizPts:int0($('#sQpt').value,DEFAULTS.quizPts),quizMax:Math.max(1,int0($('#sQmax').value,DEFAULTS.quizMax)),
+        sound:$('#sSound').checked,vibrate:$('#sVib').checked,keepAwake:$('#sAwake').checked,
+        autoLock:$('#sAuto').checked,blackout:$('#sBlack').checked,lockText:($('#sLockText').value.trim()||DEFAULTS.lockText),displayOff:$('#sDispOff').checked};
+      await guard(async()=>{ await A.saveSettings(fid,s); toast('保存しました'); render(true); }); break; }
+    case 'saveKid': { const g=(i,zero)=>{ const v=$(i).value.trim(); if(v==='') return undefined; const n=parseFloat(v); return isFinite(n)&&(zero?n>=0:n>0)?n:undefined; };
+      const o={workMin:g('#kWork'),breakMin:g('#kBreak'),graceMin:g('#kGrace'),points:g('#kPts'),dailyLimitMin:g('#kLimit',true)}; Object.keys(o).forEach(k=>o[k]===undefined&&delete o[k]);
+      await guard(async()=>{ await A.setMember(fid,uid,{settings:o}); toast('保存しました'); render(true); }); break; }
+    case 'resetKid': await guard(async()=>{ await A.setMember(fid,uid,{settings:{}}); toast('標準にもどしました'); render(true); }); break;
+    case 'addReward': { const n=$('#rName').value.trim(), c=Math.round(num($('#rCost').value,0)); if(!n||!c) return toast('名前とポイントを入れてください');
+      await guard(async()=>{ await A.addReward(fid,{name:n,cost:c,perDay:int0($('#rDay').value),perWeek:int0($('#rWeek').value),expires:$('#rExp').value||''}); toast('追加しました'); }); break; }
+    case 'delReward': if(confirm('このごほうびを削除しますか？')) guard(()=>A.delReward(fid,id)); break;
+    case 'addMission': { const t=int0($('#mTarget').value,0), b=int0($('#mBonus').value,0); if(!t||!b) return toast('回数とボーナスを入れてください');
+      await guard(async()=>{ await A.saveMissions(fid,[...missions(),{id:'m'+Date.now().toString(36),kind:$('#mKind').value,target:t,bonus:b}]); toast('追加しました'); }); break; }
+    case 'delMission': if(confirm('このミッションを削除しますか？')) guard(()=>A.saveMissions(fid,missions().filter(x=>x.id!==id))); break;
+    case 'approve': { const r=D().requests.find(x=>x.id===id); await guard(async()=>{ await A.setRequest(fid,id,{status:'approved',by:me().name,resolvedAt:Date.now()});
+      await A.addLog(fid,{uid:r.uid,name:r.name,type:'approve',text:r.rewardName,at:Date.now()}); toast('承認しました'); }); break; }
+    case 'reject': { const r=D().requests.find(x=>x.id===id); if(!confirm('見送りにして、ポイントを返しますか？')) return;
+      await guard(async()=>{ await A.setRequest(fid,id,{status:'rejected',by:me().name,resolvedAt:Date.now()}); await A.addPoints(fid,r.uid,r.cost);
+        await A.addLog(fid,{uid:r.uid,name:r.name,type:'reject',text:r.rewardName,pts:r.cost,at:Date.now()}); toast('ポイントを返しました'); }); break; }
+    case 'adjust': { const m=D().members[uid]; const v=await ask({title:m.name+' さんのポイント調整',text:'ふやすなら 10、へらすなら -10 のように入力',type:'number',inputmode:'numeric',okText:'反映'});
+      const n=Math.round(parseFloat(v)); if(!v||!isFinite(n)||n===0) return;
+      await guard(async()=>{ await A.addPoints(fid,uid,n); await A.addLog(fid,{uid,name:m.name,type:'adjust',pts:n,text:'by '+me().name,at:Date.now()}); toast('調整しました'); }); break; }
+    case 'copyCode': try{ await navigator.clipboard.writeText(D().family.code); toast('コピーしました'); }catch{ toast('コード: '+D().family.code); } break;
+    case 'renameFam': { const n=$('#oName').value.trim(); if(n) await guard(async()=>{ await A.renameFamily(fid,n); toast('変更しました'); }); break; }
+    case 'removeMember': if(confirm(D().members[uid].name+' さんを家族から外しますか？')) guard(()=>A.removeMember(fid,uid)); break;
+    case 'setPin': { const a=$('#pin1')?.value??'', b=$('#pin2')?.value??'';
+      if(!a) return toast('合言葉を入れてください');
+      if(a!==b) return toast('2つが同じではありません');
+      if(D().pinHash && !(await requirePin())) return;
+      await guard(async()=>{ await A.setPin(fid,await hashPin(a)); App.pinUntil=Date.now()+5*60000; toast('合言葉を決めました'); if(App.screen==='setpin') App.screen='modes'; render(true); }); break; }
+    case 'resetDemo': if(confirm('お試しデータを全部消します。よろしいですか？')){ A.reset(); localStorage.removeItem('yt_timer_demo'); location.reload(); } break;
+  }
+});
+document.addEventListener('change',e=>{
+  const sp=e.target.closest('[data-chg="showpw"]');
+  if(sp){ ['pin1','pin2'].forEach(i=>{ const x=document.getElementById(i); if(x) x.type=sp.checked?'text':'password'; }); return; }
+  const ks=e.target.closest('[data-chg="kidsel"]'); if(ks){ App.kidSel=ks.value; render(true); return; }
+  const el=e.target.closest('[data-chg="role"]'); if(!el) return;
+  guard(()=>App.adapter.setMember(App.fid,el.dataset.uid,{role:el.value}).then(()=>toast('役割を変えました')));
+});
+
+/* ---------------- Boot ---------------- */
+(async function boot(){
+  render(true);
+  if(!NB.on && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  let cfg=FIREBASE_CONFIG; if(!cfg){ try{ cfg=JSON.parse(localStorage.getItem('yt_cfg')); }catch{} }
+  try{
+    if(localStorage.getItem('yt_demo')==='1') App.adapter=makeLocal();
+    else if(cfg) App.adapter=await makeFirebase(cfg);
+  }catch(e){ console.error(e); App.error='Firebaseの読みこみに失敗しました: '+(e.code||e.message); }
+  if(App.adapter) App.adapter.onAuth(onUser); else { App.screen='login'; render(true); }
+  NB.onToken(async t=>{ if(!t||!t.id||!App.adapter) return; try{ await App.adapter.signInWithToken(t); }catch(e){ App.error='ログインできませんでした: '+(e.code||e.message); render(true); } });
+  setInterval(tick,500);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ tick(); syncWake(); } });
+})();
+</script>
+</body>
+</html>

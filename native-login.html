@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>やすみタイム ログイン</title>
+<style>
+:root{--p:#4f7cff;--bg:#f2f6fd;--tx:#22304a;--mut:#6b7a96}
+@media (prefers-color-scheme:dark){:root{--bg:#12182b;--tx:#e9ecf6;--mut:#9aa6c4}}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Noto Sans JP",sans-serif;padding:20px}
+.box{max-width:420px;width:100%;text-align:center}
+h1{font-size:26px;margin:0 0 8px}p{line-height:1.7;color:var(--mut);font-size:14px}
+.btn{display:block;width:100%;border:0;border-radius:16px;background:var(--p);color:#fff;font:inherit;font-weight:800;font-size:17px;padding:16px;cursor:pointer;text-decoration:none;margin-top:16px}
+.btn[disabled]{opacity:.5}
+.err{color:#e5484d;white-space:pre-wrap;font-size:13px;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>⏱️ やすみタイム</h1>
+  <p id="msg">アプリにログインするため、Googleアカウントを選んでください。</p>
+  <button class="btn" id="go">🔑 Googleアカウントでログイン</button>
+  <a class="btn" id="back" style="display:none">アプリにもどる</a>
+  <div class="err" id="err"></div>
+</div>
+<script type="module">
+const CFG = {
+  apiKey: "AIzaSyBGYgaUei3hV6ky9uni64gTuw9MjK9qZ54",
+  authDomain: "zikannkannriapuri.firebaseapp.com",
+  projectId: "zikannkannriapuri",
+  storageBucket: "zikannkannriapuri.firebasestorage.app",
+  messagingSenderId: "990893378979",
+  appId: "1:990893378979:web:36e8c4c6a71f5cda811e16"
+};
+const $ = id => document.getElementById(id);
+const redirect = new URLSearchParams(location.search).get('redirect') || '';
+// アプリ以外のアドレスへ飛ばさないための確認（アプリ自身の受け口だけ許可）
+const okRedirect = /^http:\/\/127\.0\.0\.1:\d{2,5}\/auth-callback$/.test(redirect) || redirect === 'yasumi://auth';
+if (!okRedirect) { $('go').disabled = true; $('err').textContent = 'このページはアプリから開いてください。'; }
+$('go').addEventListener('click', async () => {
+  $('err').textContent = ''; $('go').disabled = true;
+  try {
+    const B = 'https://www.gstatic.com/firebasejs/10.14.1/';
+    const [A, Au] = await Promise.all([import(B + 'firebase-app.js'), import(B + 'firebase-auth.js')]);
+    const auth = Au.getAuth(A.initializeApp(CFG));
+    const p = new Au.GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' });
+    const r = await Au.signInWithPopup(auth, p);
+    const cred = Au.GoogleAuthProvider.credentialFromResult(r);
+    if (!cred || !cred.idToken) throw new Error('ログイン情報を取得できませんでした');
+    const url = redirect + '#id=' + encodeURIComponent(cred.idToken) + '&at=' + encodeURIComponent(cred.accessToken || '');
+    $('msg').textContent = 'ログインできました。アプリにもどります…';
+    $('go').style.display = 'none'; $('back').style.display = 'block'; $('back').href = url;
+    location.href = url;
+  } catch (e) {
+    $('go').disabled = false;
+    const m = { 'auth/unauthorized-domain': 'このページのアドレスがFirebaseの「承認済みドメイン」に入っていません。', 'auth/popup-blocked': 'ポップアップがブロックされました。許可してもう一度押してください。' };
+    if (!['auth/popup-closed-by-user', 'auth/cancelled-popup-request'].includes(e.code)) $('err').textContent = m[e.code] || ('ログインできませんでした: ' + (e.code || e.message));
+  }
+});
+</script>
+</body>
+</html>

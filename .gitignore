@@ -1,0 +1,7 @@
+node_modules/
+native/desktop/app/
+native/desktop/dist/
+native/desktop/build/
+native/android/www/
+native/android/android/
+site/
