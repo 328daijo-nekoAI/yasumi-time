@@ -7,9 +7,14 @@ OUT="${1:?出力フォルダを指定してください}"
 MODE="${2:-app}"
 cd "$(dirname "$0")/.."
 rm -rf "$OUT"; mkdir -p "$OUT"
-cp index.html manifest.webmanifest icon-192.png icon-512.png "$OUT"/
 if [ "$MODE" = "site" ]; then
-  cp sw.js download.html native-login.html "$OUT"/
+  # 公開サイト：トップページ＝ダウンロードページ、ブラウザ版は app/ の下
+  mkdir -p "$OUT/app"
+  cp index.html manifest.webmanifest icon-192.png icon-512.png sw.js "$OUT/app"/
+  cp download.html "$OUT/index.html"
+  cp native-login.html icon-192.png icon-512.png "$OUT"/
+else
+  cp index.html manifest.webmanifest icon-192.png icon-512.png "$OUT"/
 fi
 # 公開先のアドレスを native-config.js に書きこむ（GitHub Actions のときだけ自動）
 if [ -n "${GITHUB_REPOSITORY:-}" ]; then
@@ -19,4 +24,5 @@ if [ -n "${GITHUB_REPOSITORY:-}" ]; then
 else
   cp native-config.js "$OUT"/
 fi
+if [ "$MODE" = "site" ]; then cp "$OUT/native-config.js" "$OUT/app/native-config.js"; fi
 echo "ウェブ部分を $OUT に用意しました"
