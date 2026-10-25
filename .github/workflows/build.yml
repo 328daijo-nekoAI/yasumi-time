@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: scripts/prepare-web.sh site site
+      - run: bash scripts/prepare-web.sh site site
       - uses: actions/configure-pages@v5
         continue-on-error: true
       - uses: actions/upload-pages-artifact@v3
@@ -47,7 +47,7 @@ jobs:
       - name: ウェブ部分をアプリに同梱
         shell: bash
         run: |
-          scripts/prepare-web.sh native/desktop/app
+          bash scripts/prepare-web.sh native/desktop/app
           mkdir -p native/desktop/build
           cp icon-512.png native/desktop/build/icon.png
       - name: Windows アプリをつくる
@@ -71,7 +71,7 @@ jobs:
           node-version: 20
       - name: ウェブ部分をアプリに同梱
         run: |
-          scripts/prepare-web.sh native/desktop/app
+          bash scripts/prepare-web.sh native/desktop/app
           mkdir -p native/desktop/build
           cp icon-512.png native/desktop/build/icon.png
       - name: Mac アプリをつくる
@@ -97,7 +97,7 @@ jobs:
           distribution: temurin
           java-version: 17
       - name: ウェブ部分をアプリに同梱
-        run: scripts/prepare-web.sh native/android/www
+        run: bash scripts/prepare-web.sh native/android/www
       - name: Android プロジェクトをつくる
         working-directory: native/android
         run: |
