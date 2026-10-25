@@ -1,0 +1,39 @@
+{
+  "name": "yasumi-time",
+  "productName": "YasumiTime",
+  "version": "1.0.0",
+  "description": "やすみタイム（休憩を守るとポイントがたまる家族向けタイマー）",
+  "main": "main.js",
+  "author": "Yasumi",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:mac": "electron-builder --mac --universal --publish never"
+  },
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "com.yasumi.app",
+    "productName": "YasumiTime",
+    "files": ["main.js", "preload.js", "app/**/*", "package.json"],
+    "directories": { "buildResources": "build", "output": "dist" },
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "artifactName": "yasumi-windows.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "shortcutName": "やすみタイム",
+      "artifactName": "yasumi-windows.${ext}"
+    },
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["universal"] }],
+      "category": "public.app-category.education",
+      "artifactName": "yasumi-mac.${ext}"
+    }
+  }
+}
